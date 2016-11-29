@@ -1,0 +1,8 @@
+---
+
+- name: logical volumes
+  lvol:
+    vg: "{{ item.volume_group }}"
+    lv: "{{ item.name }}"
+    size: "{{ item.size }}"
+  with_items: "{{ logical_volumes }}"
