@@ -1,0 +1,5 @@
+_hard_disks: "{{ lookup('template','set_fact-hard_disks.j2') | from_yaml }}"
+
+_hard_disk_default:
+  partition_label: "{{ default_partition_label }}"
+  partitions: "{{ default_partitions }}"
