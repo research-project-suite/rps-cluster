@@ -1,0 +1,9 @@
+---
+
+- name: update-grub
+  command: chroot {{ chroot_target }} update-grub
+
+- name: grub-install
+  command: chroot {{ chroot_target }} grub-install {{ item.device }}
+  with_items: "{{ hard_disks }}"
+
