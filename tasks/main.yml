@@ -1,0 +1,24 @@
+---
+
+- name: blkid
+  command: blkid
+  register: blkid
+  
+- name: set devices
+  set_fact: mdraid_devices={{ _mdraid_devices }}
+
+- name: zero superblock
+  command:
+    mdadm --zero-superblock
+    {{ item.devices | join(" ")  }}
+  with_items: "{{ mdraid_devices }}"
+
+- name: create
+  command:
+    mdadm --create
+    {{ item.device }}
+    --level={{ item.level | default(1) }}
+    --raid-devices={{ item.devices | length }}
+    --metadata={{ item.metadata | default("1.2") }}
+    {{ item.devices | join(" ")  }}
+  with_items: "{{ mdraid_devices }}"
