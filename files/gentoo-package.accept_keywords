@@ -1,0 +1,6 @@
+sys-fs/unionfs-fuse
+# required by app-crypt/debian-archive-keyring-2014.3::gentoo
+# required by debian-archive-keyring (argument)
+=app-crypt/jetring-0.21 ~amd64
+# required by debian-archive-keyring (argument)
+=app-crypt/debian-archive-keyring-2014.3 ~amd64

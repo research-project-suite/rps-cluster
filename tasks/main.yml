@@ -1,0 +1,13 @@
+---
+
+- setup:
+    gather_timeout: 30
+
+- include: debian.yml
+  when: ansible_os_family == "Debian"
+  
+- include: gentoo.yml
+  when: ansible_os_family == "Gentoo"
+
+- name: debootstrap
+  command: debootstrap {{debootstrap_args}}

@@ -1,0 +1,4 @@
+---
+
+- name: debian apt install debootstrap
+  apt: pkg=debootstrap state=installed

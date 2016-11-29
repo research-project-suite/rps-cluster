@@ -1,0 +1,4 @@
+debootstrap_suite: jessie
+debootstrap_mirror: http://debian.thengo.net/debian
+debootstrap_arch: amd64
+debootstrap_include: {}
