@@ -1,0 +1,7 @@
+---
+- setup:
+
+- debug: msg={{ hostvars[inventory_hostname] }}
+
+#- name: network interface configuration
+#  template: src=interface.j2 dest={{ network_config_target }}/etc
