@@ -1,0 +1,58 @@
+---
+
+- name: shred device
+  command:
+    shred
+    --iterations=1
+    {{ item.device }}
+  when: item.wipe is defined and item.wipe
+  with_items: "{{ dmcrypt_devices }}"
+
+- name: ramdisk
+  mount:
+    src: ram
+    fstype: ramfs
+    name: /ram
+    state: mounted
+
+- name: keyfile directory
+  file:
+    path: /ram/dmcrypt_devices/
+    owner: root
+    group: root
+    mode: 0700
+    state: directory
+
+- name: keyfile
+  copy:
+    content: "{{ item.key }}"
+    dest: /ram/dmcrypt_devices/{{ item.name }}
+  with_items: "{{ dmcrypt_devices }}"
+
+- name: luksFormat
+  command:
+    cryptsetup luksFormat
+    --cipher {{ item.cipher }}
+    --hash {{ item.hash }}
+    --key-size {{ item.key_size }}
+    {{ item.device }}
+    /ram/dmcrypt_devices/{{ item.name }}
+  with_items: "{{ dmcrypt_devices }}"
+
+- name: luksOpen
+  command:
+    cryptsetup luksOpen
+    --key-file=/ram/dmcrypt_devices/{{ item.name }}
+    {{ item.device }}
+    {{ item.name }}
+  with_items: "{{ dmcrypt_devices }}"
+
+- name: wipe keyfile
+  command: shred /ram/dmcrypt_devices/{{ item.name }}
+  with_items: "{{ dmcrypt_devices }}"
+
+- name: remove keyfile
+  file:
+    path: /ram/dmcrypt_devices/{{ item.name }}
+    state: absent
+  with_items: "{{ dmcrypt_devices }}"
