@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: static_host_vars
+    static_host_vars_filename: partitions
+    static_host_vars_default: "{{ default_partitions_profiles[default_partitions_profile] }}"

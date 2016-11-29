@@ -1,0 +1,78 @@
+default_partitions_profiles:
+  
+  mdraid1_lvm:
+    
+    default_partition_label: gpt
+    
+    default_partitions:
+      - name: BIOS boot
+        partnum: 1
+        typecode: ef02
+        start: 1M
+        end: +1M
+      - name: boot0-md
+        partnum: 2
+        typecode: fd00
+        start: 1G
+        end: +1G
+      - name: boot1-md
+        partnum: 3
+        typecode: fd00
+        start: 2G
+        end: +1G
+      - name: boot2-md
+        partnum: 4
+        typecode: fd00
+        start: 3G
+        end: +1G
+      - name: boot3-md
+        partnum: 5
+        typecode: fd00
+        start: 4G
+        end: +1G
+      - name: vg0-md
+        partnum: 6
+        typecode: fd00
+        start: 6G
+        end: -1G
+    
+    mdraid_devices:
+      - device: /dev/md/boot0
+        devices: boot0-md
+      - device: /dev/md/boot1
+        devices: boot1-md
+      - device: /dev/md/boot2
+        devices: boot2-md
+      - device: /dev/md/boot3
+        devices: boot3-md
+      - device: /dev/md/vg0-pv
+        devices: vg0-md
+    
+    dmcrypt_devices: []
+      #- device: /dev/md/crypt0-md
+      #  name: crypt0-pv
+      #  cipher: aes-xts-plain64
+      #  hash: sha512
+      #  key_size: 512
+      #  key: xyz
+    
+    volume_groups:
+      - name: vg0
+        devices:
+          - /dev/md/vg0-pv
+    
+    logical_volumes:
+      - name: root
+        size: 32G
+        volume_group: vg0
+      - name: swap
+        size: 32G
+        volume_group: vg0
+    
+    filesystems:
+      - device: /dev/vg0/root
+        mount_point: /
+        fstype: btrfs
+      - device: /dev/md/boot0
+        mount_point: /boot
+        fstype: btrfs
