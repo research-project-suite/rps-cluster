@@ -1,7 +1,7 @@
 --arch={{debootstrap_arch}}
+{% if debootstrap_variant is defined %}
+--variant={{debootstrap_variant}}
+{% endif %}
 {% if debootstrap_include|length >0 %}
 --include={{debootstrap_include|join(',')}}
 {% endif %}
-{{debootstrap_suite}}
-{{debootstrap_target}}
-{{debootstrap_mirror}}

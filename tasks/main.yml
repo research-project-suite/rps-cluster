@@ -1,7 +1,7 @@
 ---
 
 - setup:
-    gather_timeout: 30
+    gather_subset: '!all'
 
 - include: debian.yml
   when: ansible_os_family == "Debian"
@@ -9,5 +9,22 @@
 - include: gentoo.yml
   when: ansible_os_family == "Gentoo"
 
+#- name: debootstrap download
+#  command:
+#    debootstrap
+#    --download-only
+#    --make-tarball={{debootstrap_tarball}}
+#    {{debootstrap_args}}
+#    {{debootstrap_suite}}
+#    {{debootstrap_download_directory}}
+#    {{debian_mirror}}
+#  args:
+#    creates: "{{debootstrap_tarball}}"
+
 - name: debootstrap
-  command: debootstrap {{debootstrap_args}}
+  command:
+    debootstrap
+    {{debootstrap_args}}
+    {{debootstrap_suite}}
+    {{root_target_directory}}
+    {{debian_mirror}}

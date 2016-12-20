@@ -1,1 +1,3 @@
 debootstrap_args: "{{ lookup('template', 'debootstrap_args.j2') }}"
+debootstrap_download_directory: /var/cache/debootstrap/{{debootstrap_suite}}-{{debootstrap_arch}}/
+debootstrap_tarball:  /var/cache/debootstrap/{{debootstrap_suite}}-{{debootstrap_arch}}-{{debootstrap_variant|default('default')}}-{{debootstrap_include|sort()|join('-')}}.tar
