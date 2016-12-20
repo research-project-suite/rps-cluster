@@ -1,0 +1,10 @@
+---
+
+- name: reboot
+  command: shutdown -r 1
+  async: 0
+  poll: 0
+  ignore_errors: true
+
+- name: wait for ssh
+  local_action: wait_for host={{ ansible_host | default(inventory_hostname)  }} port=22 search_regex=OpenSSH delay={{ reboot_delay | default(120) }} state=started
