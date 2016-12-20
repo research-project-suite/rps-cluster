@@ -1,0 +1,123 @@
+filesystem_uuid_namespace: "{{ lookup('pipe','uuid -v4') }}"
+
+_fs_uuid_root:   "{{ lookup('pipe','uuid -v5 '+filesystem_uuid_namespace+' root') }}"
+_fs_uuid_boot:   "{{ lookup('pipe','uuid -v5 '+filesystem_uuid_namespace+' boot') }}"
+_fs_uuid_rescue: "{{ lookup('pipe','uuid -v5 '+filesystem_uuid_namespace+' rescue') }}"
+_fs_uuid_select: "{{ lookup('pipe','uuid -v5 '+filesystem_uuid_namespace+' select') }}"
+
+hard_disks:
+  - device: "{{ hard_disk_device }}"
+    label_type: "{{ _label_type[installation_profile] }}"
+    partitions: "{{ _partitions[installation_profile] }}"
+    
+_label_type:
+  bios: msdos
+  efi: gpt
+
+_partitions:
+  bios:
+    - part_type: primary
+      fs_type: btrfs
+      start: 768MiB
+      end: 1GiB
+    - part_type: primary
+      fs_type: btrfs
+      start: 1GiB
+      end: 2GiB
+    - part_type: primary
+      fs_type: btrfs
+      start: 2GiB
+      end: 6GiB
+    - part_type: primary
+      start: 6GiB
+      end: -1s
+  efi:
+    - part_type: ESP
+      start: 256MiB
+      end: 768MiB
+    - name: select
+      start: 768MiB
+      end: 1GiB
+    - name: "{{inventory_hostname}}-boot0"
+      typecode: 8300
+      start: 1GiB
+      end: 2GiB
+    - name: "{{inventory_hostname}}-rescue0"
+      typecode: 8300
+      start: 2GiB
+      end: 6GiB
+    - name: "{{inventory_hostname}}-crypt0"
+      typecode: 8300
+      start: 6GiB
+      end: -1s
+
+mdraid_devices: []
+
+dmcrypt_devices:
+  - device: "{{ _crypt_device[installation_profile] }}"
+    name: "{{inventory_hostname}}-crypt0"
+    cipher: aes-xts-plain64
+    hash: sha512
+    key_size: 512
+
+_crypt_device:
+  bios: "{{ hard_disk_device }}-part4"
+  efi: /dev/disk/by-partlabel/{{inventory_hostname}}-crypt
+
+volume_groups:
+  - name: "{{inventory_hostname}}-vg0"
+    devices:
+      - /dev/mapper/{{inventory_hostname}}-crypt0
+    
+logical_volumes:
+  - name: root
+    size: 32G
+    volume_group: "{{inventory_hostname}}-vg0"
+  - name: swap
+    size: 8G
+    volume_group: "{{inventory_hostname}}-vg0"
+  - name: home
+    size: 100%FREE
+    volume_group: "{{inventory_hostname}}-vg0"
+    
+filesystems: "{{ _filesystems[installation_profile] }}"
+
+_filesystems:
+  bios:
+    - device: /dev/{{inventory_hostname}}-vg0/root
+      mount_point: /
+      fstype: btrfs
+      uuid: "{{ _fs_uuid_root }}"
+    - device: "{{ hard_disk_device }}-part2"
+      mount_point: /boot
+      fstype: btrfs
+      uuid: "{{ _fs_uuid_boot }}"
+    - device: "{{ hard_disk_device }}-part3"
+      mount_point: /boot/rescue
+      fstype: btrfs
+      uuid: "{{ _fs_uuid_rescue }}"
+    - device: "{{ hard_disk_device }}-part1"
+      mount_point: /boot/select
+      fstype: btrfs
+      uuid: "{{ _fs_uuid_select }}"
+  efi:
+    - device: /dev/{{inventory_hostname}}-vg0/root
+      mount_point: /
+      fstype: btrfs
+      uuid: "{{ _fs_uuid_root }}"
+    - device: /dev/disk/by-partlabel/{{inventory_hostname}}-boot
+      mount_point: /boot
+      fstype: btrfs
+      uuid: "{{ _fs_uuid_boot }}"
+    - device: /dev/disk/by-partlabel/{{inventory_hostname}}-rescue
+      mount_point: /boot/rescue
+      fstype: btrfs
+      uuid: "{{ _fs_uuid_rescue }}"
+    - device: /dev/disk/by-partlabel/{{inventory_hostname}}-select
+      mount_point: /boot/select
+      fstype: btrfs
+      uuid: "{{ _fs_uuid_select }}"
+    - device: /dev/disk/by-partuuid/C12A7328-F81F-11D2-BA4B-00A0C93EC93B
+      mount_point: /boot/efi
+      fstype: fat
+      uuid: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
