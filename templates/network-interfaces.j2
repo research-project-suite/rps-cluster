@@ -1,0 +1,49 @@
+# interfaces(5) file used by ifup(8) and ifdown(8)
+
+{{ ansible_managed | comment }}
+
+auto lo
+iface lo inet loopback
+
+{% for netname,netif in network_interfaces.iteritems() %}
+### {{ netname }} ###
+auto {{ netif.device }}
+allow-hotplug {{ netif.device }}
+
+{% if netif.bridge is defined %}
+iface {{ netif.device }} inet manual
+      bridge_ports {{ netif.bridge.ports | join(" ") }}
+      bridge_stp {{ netif.bridge.stp | default(false) | ternary('on','off') }}
+{% endif %}
+
+{% for ipv6 in netif.ipv6 | default([]) %}
+iface {{ netif.device }} inet6 {{ ipv6.method }}
+{% if ipv6.method == "static" %}
+      address {{ ipv6.address | ipv6('address') }}
+      netmask {{ ipv6.address | ipv6('prefix') }}
+{% if ipv6.gateway is defined %}
+      gateway {{ ipv6.gateway | ipv6('address') }}
+{% endif %}
+{% endif %}
+{% endfor %}
+
+{% for ipv4 in netif.ipv4 | default([]) %}
+iface {{ netif.device }} inet {{ ipv4.method }}
+{% if ipv4.method == "static" %}
+      address {{ ipv4.address | ipv4('address') }}
+      network {{ ipv4.address | ipv4('network') }}
+      netmask {{ ipv4.address | ipv4('netmask') }}
+      broadcast {{ ipv4.address | ipv4('broadcast') }}
+{% if ipv4.gateway is defined %}
+      gateway {{ ipv4.gateway | ipv4('address') }}
+{% endif %}
+{% if ipv4.gateway is defined %}
+      gateway {{ ipv4.gateway | ipv4('address') }}
+{% endif %}
+{% endif %}
+{% endfor %}
+
+{% endfor %}
+
+# Include files from /etc/network/interfaces.d:
+source-directory /etc/network/interfaces.d

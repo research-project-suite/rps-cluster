@@ -1,7 +1,11 @@
 ---
-- setup:
 
-- debug: msg={{ hostvars[inventory_hostname] }}
+- name: network interfaces configuration
+  template:
+    src: network-interfaces.j2
+    dest: "{{ root_target_directory | default('') }}/etc/network/interfaces"
 
-#- name: network interface configuration
-#  template: src=interface.j2 dest={{ network_config_target }}/etc
+#- name: persistent net rules
+#  template:
+#    src: persistent-net.rules.j2
+#    dest: "{{ network_interfaces_target }}/etc/udev/rules.d/z25_persistent-net.rules"

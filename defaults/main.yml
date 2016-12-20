@@ -1,0 +1,1 @@
+#network_interfaces_default_interface: "{{ undefined | default(ansible_default_ipv6.interface) | default(ansible_default_ipv4.interface) }}"
