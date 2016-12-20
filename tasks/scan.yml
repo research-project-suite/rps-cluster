@@ -1,0 +1,12 @@
+---
+
+- name: scan ssh host
+  local_action: command ssh-keyscan -t {{ssh_host_key_type}} {{inventory_hostname}}
+  register: _ssh_keyscan_result
+  changed_when: false
+
+- name: set ssh_host_key_ed25519_public
+  set_fact:
+    ssh_host_key_ed25519_public: "{{ _ssh_keyscan_result.stdout.split()[2] }}"
+  changed_when: ssh_host_key_ed25519_public != _ssh_keyscan_result.stdout.split()[2]
+  when: ssh_host_key_type == "ed25519"
