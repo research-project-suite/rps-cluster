@@ -1,0 +1,9 @@
+--clear
+"--disk-guid={{ item.guid | default('R') }}"
+{% for part in item.partitions  %}
+"--new={{ part.partnum }}:{{ part.start }}:{{ part.end }}"
+"--change-name={{ part.partnum }}:{{ part.name }}"
+"--typecode={{ part.partnum }}:{{ part.typecode }}"
+"--partition-guid={{ part.partnum }}:{{ part.guid | default('R') }}"
+{% endfor %}
+{{ item.device }}

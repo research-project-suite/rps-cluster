@@ -1,0 +1,10 @@
+---
+
+- name: apt packages installed
+  apt:
+    pkg: "{{ item }}"
+    state: installed
+  with_items:
+    #- gdisk
+    - hdparm
+    - parted

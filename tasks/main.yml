@@ -1,30 +1,24 @@
 ---
 
-- name: set default partitions
-  set_fact:
-    hard_disks: "{{ _hard_disks }}"
+- setup:
+    gather_subset: "!all"
 
-- name: clear all partition table informations from disks
+- name: debian
+  include: debian.yml
+  when: ansible_os_family == "Debian"
+
+#- include: gdisk.yml
+
+- name: write partition table
   command:
-    sgdisk
-    --clear
+    parted --script
     {{ item.device }}
+    -- {{ lookup('template','parted_args.j2') }}
   with_items: "{{ hard_disks }}"
-  
-- name: create new partition table information
-  command:
-    sgdisk
-    "--new={{ item.1.partnum }}:{{ item.1.start }}:{{ item.1.end }}"
-    "--change-name={{ item.1.partnum }}:{{ item.1.name }}"
-    "--typecode={{ item.1.partnum }}:{{ item.1.typecode }}"
-    {{ item.0.device }}
-  with_subelements:
-    - "{{ hard_disks }}"
-    - partitions
 
 - name: sync
   command: sync
-  
+
 - name: reread partition tables
   command: hdparm -z {{ item.device }}
   with_items: "{{ hard_disks }}"

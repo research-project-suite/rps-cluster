@@ -1,0 +1,15 @@
+mklabel {{ item.label_type }}
+{% for part in item.partitions  %}
+mkpart
+{% if item.label_type == "msdos" or item.label_type == "dvh" %}
+"{{ part.part_type }}"
+{% endif %}
+{% if part.fs_type is defined %}
+"{{ part.fs_type }}"
+{% endif %}
+{% if part.name is defined %}
+"{{ part.name }}
+"{% endif %}
+"{{ part.start }}"
+"{{ part.end }}"
+{% endfor %}
