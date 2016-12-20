@@ -1,0 +1,44 @@
+dependencies:
+  - role: partitioning
+  - role: mdraid_devices
+    mdraid_devices_state: created
+  - role: dmcrypt_devices
+    dmcrypt_devices_state: formated
+  - role: volume_groups
+    volume_groups_state: present
+  - role: logical_volumes
+    logical_volumes_state: present
+  - role: filesystems
+    filesystems_state: formated
+  - role: debootstrap
+    debootstrap_include:
+      - linux-image-amd64
+      - mdadm
+      - lvm2
+      - cryptsetup
+      - openssh-server
+      - btrfs-tools
+      - grub-pc
+      - python
+      - bridge-utils
+      - console-setup
+      - acpi-support
+  - role: mdraid_mdadm_conf
+  - role: dmcrypt_crypttab
+  - role: fstab
+  - role: keyboard_configuration
+  - role: chroot_environment
+    chroot_environment_state: mounted
+  - role: grub_bootloader
+  - role: update_initramfs
+  - role: chroot_environment
+    chroot_environment_state: unmounted
+  - role: network_interfaces
+  - role: ssh_root_access
+  - role: ssh_host_key
+    ssh_host_key_state: fetched
+  - role: filesystems
+    filesystems_state: unmounted
+  - role: reboot
+  - role: ssh_host_key
+    ssh_host_key_state: configured
