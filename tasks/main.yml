@@ -1,20 +1,42 @@
 ---
 
+- setup:
+    gather_subset: "!all"
+
+- name: install btrfsutils
+  apt:
+    pkg: btrfs-tools
+    state: installed
+  when: ansible_os_family=="Debian"
+
+- name: unmount filesystems
+  mount:
+    name: "{{ root_target_directory | default('') }}/{{ item.mount_point }}"
+    state: unmounted
+  with_items: "{{ filesystems[::-1] }}"
+  when:
+    filesystems_state == "unmounted" or
+    filesystems_state == "formated"
+
 - name: filesystems
   filesystem:
     fstype: "{{ item.fstype }}"
     dev: "{{ item.device }}"
-    force: yes
+    opts: "-U {{ item.uuid }}"
+    force: "{{ filesystems_state == 'formated' }}"
   with_items: "{{ filesystems }}"
+  when:
+    item.device is defined and (
+    filesystems_state == "mounted" or
+    filesystems_state == "formated" )
 
 - name: mount filesystems
   mount:
-    name: "{{ mount_directory_target }}/{{ item.mount_point }}"
-    src: "{{ item.device }}"
+    name: "{{ root_target_directory  | default('') }}/{{ item.mount_point }}"
+    src: "UUID={{ item.uuid }}"
     fstype: "{{ item.fstype }}"
     state: mounted
   with_items: "{{ filesystems }}"
-
-- name: sync
-  command: sync
-  
+  when:
+    filesystems_state == "mounted" or
+    filesystems_state == "formated"
