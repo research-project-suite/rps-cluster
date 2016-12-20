@@ -1,0 +1,3 @@
+{% for cryptdev in dmcrypt_devices %}
+{{ cryptdev.name }} {{ cryptdev.device }} none luks
+{% endfor %}
