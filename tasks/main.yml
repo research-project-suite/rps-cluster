@@ -1,8 +1,20 @@
 ---
 
+- setup:
+    gather_subset: "!all"
+
+- name: debian apt install packages
+  apt:
+    pkg: "{{ item }}"
+    state: installed
+  with_items:
+    - lvm2
+  when: ansible_os_family == "Debian"
+
 - name: logical volumes
   lvol:
     vg: "{{ item.volume_group }}"
     lv: "{{ item.name }}"
     size: "{{ item.size }}"
+    state: "{{ logical_volumes_state }}"
   with_items: "{{ logical_volumes }}"
