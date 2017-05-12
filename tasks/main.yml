@@ -17,4 +17,3 @@
     pvs: "{{ item.devices | join(',') }}"
     state: "{{ volume_groups_state }}"
   with_items: "{{ volume_groups }}"
-
