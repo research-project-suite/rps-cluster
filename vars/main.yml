@@ -9,7 +9,7 @@ hard_disks:
   - device: "{{ hard_disk_device }}"
     label_type: "{{ _label_type[installation_profile] }}"
     partitions: "{{ _partitions[installation_profile] }}"
-    
+
 _label_type:
   bios: msdos
   efi: gpt
@@ -65,26 +65,26 @@ _crypt_device:
   efi: /dev/disk/by-partlabel/{{inventory_hostname}}-crypt
 
 volume_groups:
-  - name: "{{inventory_hostname}}-vg0"
+  - name: vg
     devices:
       - /dev/mapper/{{inventory_hostname}}-crypt0
-    
+
 logical_volumes:
   - name: root
     size: 32G
-    volume_group: "{{inventory_hostname}}-vg0"
+    volume_group: vg
   - name: swap
-    size: 8G
-    volume_group: "{{inventory_hostname}}-vg0"
+    size: 1G
+    volume_group: vg
   - name: home
     size: 100%FREE
-    volume_group: "{{inventory_hostname}}-vg0"
-    
+    volume_group: vg
+
 filesystems: "{{ _filesystems[installation_profile] }}"
 
 _filesystems:
   bios:
-    - device: /dev/{{inventory_hostname}}-vg0/root
+    - device: /dev/vg/root
       mount_point: /
       fstype: btrfs
       uuid: "{{ _fs_uuid_root }}"
@@ -101,7 +101,7 @@ _filesystems:
       fstype: btrfs
       uuid: "{{ _fs_uuid_select }}"
   efi:
-    - device: /dev/{{inventory_hostname}}-vg0/root
+    - device: /dev/vg/root
       mount_point: /
       fstype: btrfs
       uuid: "{{ _fs_uuid_root }}"
