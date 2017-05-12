@@ -5,7 +5,10 @@
     ssh_host_key_state is defined and
     ssh_host_key_state == 'scanned'
 
-#- include: setup.yml
+- include: setup.yml
+  when:
+    ssh_host_key_state is defined and
+    ssh_host_key_state == 'setup'
 
 - include: fetch.yml
   when:
