@@ -1,13 +1,18 @@
 dependencies:
   - role: partitioning
+    when: hard_disks is defined
   - role: mdraid_devices
     mdraid_devices_state: created
+    when: mdraid_devices is defined
   - role: dmcrypt_devices
     dmcrypt_devices_state: formated
+    when: dmcrypt_devices is defined
   - role: volume_groups
     volume_groups_state: present
+    when: volume_groups is defined
   - role: logical_volumes
     logical_volumes_state: present
+    when: logical_volumes is defined
   - role: filesystems
     filesystems_state: formated
   - role: debootstrap
@@ -23,22 +28,15 @@ dependencies:
       - bridge-utils
       - console-setup
       - acpi-support
-  - role: mdraid_mdadm_conf
+  #- role: mdraid_mdadm_conf
   - role: dmcrypt_crypttab
+    when: dmcrypt_devices is defined
   - role: fstab
   - role: keyboard_configuration
-  - role: chroot_environment
-    chroot_environment_state: mounted
   - role: grub_bootloader
-  - role: update_initramfs
-  - role: chroot_environment
-    chroot_environment_state: unmounted
   - role: network_interfaces
   - role: ssh_root_access
   - role: ssh_host_key
     ssh_host_key_state: fetched
   - role: filesystems
     filesystems_state: unmounted
-  - role: reboot
-  - role: ssh_host_key
-    ssh_host_key_state: configured
