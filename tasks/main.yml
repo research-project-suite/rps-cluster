@@ -1,4 +1,27 @@
 ---
+- include_role:
+    name: chroot_environment
+  vars:
+    chroot_environment_state: mounted
+  when: root_target_directory is defined
+
+- name: default grub settings
+  template:
+    src: default-grub.j2
+    dest: "{{ root_target_directory }}/etc/default/grub"
+
+- name: grub-install
+  command: chroot {{ root_target_directory }} grub-install {{ boot_devices | join(" ") }}
+
+- name: update-grub
+  command: chroot {{ root_target_directory }} update-grub
 
 - name: update initramfs
   command: chroot {{ root_target_directory }} update-initramfs -u
+
+
+- include_role:
+    name: chroot_environment
+  vars:
+    chroot_environment_state: unmounted
+  when: root_target_directory is defined
