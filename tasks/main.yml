@@ -21,7 +21,7 @@
 - name: write ssh_known_hosts file
   local_action: known_hosts
   args:
-    path: 'ssh_known_hosts'
+    path: "{{ playbook_dir }}/ssh_known_hosts"
     name: '{{ inventory_hostname }}'
     key: "{{ inventory_hostname }},{{ ansible_host }} {{ _ssh_key_type[ssh_host_key_type] }} {{ _ssh_host_key[ssh_host_key_type] }}"
   when:
