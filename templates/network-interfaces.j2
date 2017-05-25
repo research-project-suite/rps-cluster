@@ -14,7 +14,7 @@ allow-hotplug {{ netif.device }}
 
 {% if netif.bridge is defined %}
 iface {{ netif.device }} inet manual
-      bridge_ports {{ netif.bridge.ports | join(" ") }}
+      bridge_ports {{ netif.bridge.ports | default(["none"]) | join(" ") }}
       bridge_stp {{ netif.bridge.stp | default(false) | ternary('on','off') }}
 {% endif %}
 
