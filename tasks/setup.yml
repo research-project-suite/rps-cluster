@@ -1,8 +1,5 @@
 ---
 
-- setup:
-    gather_subset: '!all'
-
 - name: set ssh_host_key_ed25519_public
   set_fact:
     ssh_host_key_ed25519_public: "{{ ansible_ssh_host_key_ed25519_public }}"

@@ -1,7 +1,7 @@
 ---
 
 - name: scan ssh host
-  local_action: command ssh-keyscan -t {{ssh_host_key_type}} {{inventory_hostname}}
+  local_action: command ssh-keyscan -t {{ssh_host_key_type}} {{ansible_host}}
   register: _ssh_keyscan_result
   changed_when: false
 
