@@ -1,9 +1,6 @@
 ---
 
-- setup:
-    gather_subset: "!all"
-
-- name: install btrfsutils
+- name: install btrfs-tools
   apt:
     pkg: btrfs-tools
     state: installed
@@ -22,7 +19,7 @@
   filesystem:
     fstype: "{{ item.fstype }}"
     dev: "{{ item.device }}"
-    opts: "-U {{ item.uuid }}"
+    opts: -U {{ item.uuid }}
     force: "{{ filesystems_state == 'formated' }}"
   with_items: "{{ filesystems }}"
   when:
@@ -35,6 +32,7 @@
     name: "{{ root_target_directory  | default('') }}/{{ item.mount_point }}"
     src: "UUID={{ item.uuid }}"
     fstype: "{{ item.fstype }}"
+    opts: '{{ item.mount_options | default("defaults") }}'
     state: mounted
   with_items: "{{ filesystems }}"
   when:
