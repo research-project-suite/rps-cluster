@@ -5,6 +5,5 @@
     pkg: "{{ item }}"
     state: installed
   with_items:
-    #- gdisk
     - hdparm
     - parted

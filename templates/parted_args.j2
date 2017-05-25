@@ -8,8 +8,14 @@ mkpart
 "{{ part.fs_type }}"
 {% endif %}
 {% if part.name is defined %}
-"{{ part.name }}
-"{% endif %}
+"{{ part.name }}"
+{% endif %}
 "{{ part.start }}"
 "{{ part.end }}"
+{% if part.flags is defined %}
+{% set outer_loop = loop %}
+{% for flag in part.flags %}
+set {{ outer_loop.index }} {{ flag }} on
+{% endfor %}
+{% endif %}
 {% endfor %}

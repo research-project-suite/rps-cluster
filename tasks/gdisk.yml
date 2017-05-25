@@ -1,8 +1,0 @@
----
-
-- name: write gpt partition table
-  command:
-    sgdisk
-    {{ lookup('template','sgdisk_args.j2') }}
-  with_items: "{{ hard_disks }}"
-  when: item.partition_table == "gpt"
