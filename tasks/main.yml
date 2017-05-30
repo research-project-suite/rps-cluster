@@ -1,0 +1,12 @@
+--
+
+- name: swap
+  mount:
+    name: none
+    src: UUID={{ item.uuid }}
+    fstype: swap
+    opts: sw
+    passno: 0
+    dump: 0
+    state: present
+  with_items: "{{ swap_devices }}"
