@@ -1,0 +1,6 @@
+---
+
+- name: apt mdadm installed
+  apt:
+    pkg: mdadm
+    state: present

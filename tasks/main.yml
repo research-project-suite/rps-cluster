@@ -1,5 +1,7 @@
 ---
 
+- include: setup_Debian.yml
+
 #- name: mdadm detail scan
 #  command: mdadm --detail --scan {{ item.device }}
 #  register: _mdadm_detail_scan_output
@@ -9,8 +11,8 @@
 #
 #- debug: msg={{_mdadm_detail_scan_output}}
 #
-#- name: set state 
-  
+#- name: set state
+
 #- name: blkid
 #  command: blkid
 #  register: blkid
