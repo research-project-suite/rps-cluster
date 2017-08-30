@@ -11,14 +11,14 @@
     dest: "{{ root_target_directory }}/etc/default/grub"
 
 - name: grub-install
-  command: chroot {{ root_target_directory }} grub-install {{ boot_devices | join(" ") }}
+  command: chroot {{ root_target_directory }} grub-install {{ item }}
+  with_items: "{{ boot_devices }}"
 
 - name: update-grub
   command: chroot {{ root_target_directory }} update-grub
 
 - name: update initramfs
   command: chroot {{ root_target_directory }} update-initramfs -u
-
 
 - include_role:
     name: chroot_environment

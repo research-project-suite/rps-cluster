@@ -2,3 +2,4 @@ grub_cmdline_linux:
 grub_cmdline_linux_default: quiet
 grub_disable_recovery: false
 grub_terminal: console
+boot_devices: "{{ hard_disks | map(attribute='device') | list }}"
