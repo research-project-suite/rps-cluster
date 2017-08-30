@@ -35,9 +35,9 @@ iface {{ netif.device }} inet {{ ipv4.method }}
 iface {{ netif.device }} inet6 {{ ipv6.method }}
 {% if ipv6.method == "static" %}
       address {{ ipv6.address | ipv6('address') }}
-      netmask {{ ipv6.address | ipv6('prefix') }}
+      netmask {{ ipv6.address | ipv6('prefix') | default(128) }}
 {% if ipv6.gateway is defined %}
-{% if ipv6.gateway | ipv6(ipv6.address) %}
+{% if ( ( ipv6.address | ipv6('prefix') | int ) < 128 ) and ( ipv6.gateway | ipv6(ipv6.address) ) %}
       gateway {{ ipv6.gateway | ipv6('address') }}
 {% else %}
       post-up sleep 5; /sbin/ip -family inet6 route add {{ ipv6.gateway }} dev {{ netif.device }}
