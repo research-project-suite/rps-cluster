@@ -1,4 +1,5 @@
 --arch={{debootstrap_arch}}
+--components={{debootstrap_components|join(',')}}
 {% if debootstrap_variant is defined %}
 --variant={{debootstrap_variant}}
 {% endif %}

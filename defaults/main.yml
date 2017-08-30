@@ -1,4 +1,24 @@
 debian_mirror: http://deb.debian.org/debian
-debootstrap_suite: jessie
+debian_distribution: stretch
+debian_components:
+  - main
+  - contrib
+  - non-free
+
+debootstrap_suite: "{{ debian_distribution }}"
+debootstrap_components: "{{ debian_components }}"
 debootstrap_arch: amd64
-debootstrap_include: {}
+debootstrap_include:
+  - linux-image-amd64
+  - openssh-server
+  - python
+  - console-setup
+  - dbus
+  - acpi
+  - acpi-support
+  - mdadm
+  - cryptsetup
+  - lvm2
+  - grub-pc
+  - bridge-utils
+  - busybox-static
