@@ -29,7 +29,7 @@
 
 - name: mount filesystems
   mount:
-    name: "{{ root_target_directory  | default('') }}/{{ item.mount_point }}"
+    name: "{{ root_target_directory  | default('') }}{{ root_target_directory is defined | ternary('/','') }}{{ item.mount_point }}"
     src: "UUID={{ item.uuid }}"
     fstype: "{{ item.fstype }}"
     opts: '{{ item.mount_options | default("defaults") }}'
