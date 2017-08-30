@@ -3,8 +3,7 @@
 - setup:
     gather_subset: "!all"
 
-- name: debian
-  include: debian.yml
+- include: setup_Debian.yml
   when: ansible_os_family == "Debian"
 
 #- include: gdisk.yml
@@ -20,5 +19,5 @@
   command: sync
 
 - name: reread partition tables
-  command: hdparm -z {{ item.device }}
+  command: partprobe {{ item.device }}
   with_items: "{{ hard_disks }}"

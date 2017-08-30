@@ -5,5 +5,4 @@
     pkg: "{{ item }}"
     state: installed
   with_items:
-    - hdparm
     - parted
