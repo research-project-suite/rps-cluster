@@ -1,7 +1,7 @@
 ---
 
 - name: reboot
-  command: shutdown -r 30
+  command: shutdown --no-wall -r +1
   async: 0
   poll: 0
   ignore_errors: true
