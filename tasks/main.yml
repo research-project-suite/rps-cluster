@@ -2,8 +2,8 @@
 
 - include: scan.yml
   when:
-    ssh_host_key_state is defined and
-    ssh_host_key_state == 'scanned'
+    ssh_host_key_state is defined
+    and ssh_host_key_state == 'scanned'
 
 - include: setup.yml
   when:
@@ -12,7 +12,6 @@
 
 - include: fetch.yml
   when:
-    not ssh_host_key_state is defined or
-    ssh_host_key_state == 'fetched'
+    not ssh_host_key_state is defined
 
 - include: save.yml
