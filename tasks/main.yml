@@ -23,7 +23,7 @@
   args:
     path: "{{ playbook_dir }}/ssh_known_hosts"
     name: '{{ inventory_hostname }}'
-    key: "{{ inventory_hostname }},{{ ansible_host }} {{ _ssh_key_type[ssh_host_key_type] }} {{ _ssh_host_key[ssh_host_key_type] }}"
+    key: "{{ inventory_hostname }},{{ ssh_ip }} {{ _ssh_key_type[ssh_host_key_type] }} {{ _ssh_host_key[ssh_host_key_type] }}"
   when:
     not ssh_host_key_state is defined or
     ssh_host_key_state == 'configured' or

@@ -1,1 +1,2 @@
 ssh_host_key_type: ed25519
+ssh_ip: "{{ansible_host}}"
