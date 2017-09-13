@@ -1,5 +1,10 @@
 ---
 
+- include: regenerate.yml
+  when:
+    ssh_host_key_state is defined
+    and ssh_host_key_state == 'regenerated'
+
 - include: scan.yml
   when:
     ssh_host_key_state is defined
@@ -13,5 +18,7 @@
 - include: fetch.yml
   when:
     not ssh_host_key_state is defined
+    or ( ssh_host_key_state == 'fetched'
+    and ssh_host_key_state == 'regenerated' )
 
 - include: save.yml

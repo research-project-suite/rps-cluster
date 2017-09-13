@@ -1,0 +1,8 @@
+---
+
+- name: delete ssh host keys
+  shell: rm /etc/ssh/ssh_host_*
+  register: _ssh_host_keys_delete
+
+- name: reconfigure ssh server
+  shell: dpkg-reconfigure openssh-server
