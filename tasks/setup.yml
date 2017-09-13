@@ -1,6 +1,8 @@
 ---
 
-- name: set ssh_host_key_ed25519_public
+- setup:
+
+- name: set ssh_host_key_ed25519_public from setup
   set_fact:
     ssh_host_key_ed25519_public: "{{ ansible_ssh_host_key_ed25519_public }}"
   changed_when: ssh_host_key_ed25519_public != ansible_ssh_host_key_ed25519_public

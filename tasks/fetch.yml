@@ -6,7 +6,7 @@
   register: _ssh_host_key_cat_result
   changed_when: false
 
-- name: set ssh_host_key_ed25519_public
+- name: set fetched ssh_host_key_ed25519_public
   set_fact:
     ssh_host_key_ed25519_public: "{{ _ssh_host_key_cat_result.stdout.split()[1] }}"
   changed_when: ssh_host_key_ed25519_public != _ssh_host_key_cat_result.stdout.split()[1]
