@@ -2,7 +2,7 @@
 
 - name: fetch ssh host key
   command:
-    cat "{{ root_target_directory }}/etc/ssh/ssh_host_{{ ssh_host_key_type }}_key.pub"
+    cat "{{ root_target_directory | default("") }}/etc/ssh/ssh_host_{{ ssh_host_key_type }}_key.pub"
   register: _ssh_host_key_cat_result
   changed_when: false
 
