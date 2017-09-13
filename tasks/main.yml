@@ -18,7 +18,7 @@
 - include: fetch.yml
   when:
     not ssh_host_key_state is defined
-    or ( ssh_host_key_state == 'fetched'
-    or ssh_host_key_state == 'regenerated' )
+    or ssh_host_key_state == 'fetched'
+    or ssh_host_key_state == 'regenerated'
 
 - include: save.yml
