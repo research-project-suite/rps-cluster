@@ -5,6 +5,7 @@
 auto lo
 iface lo inet loopback
 
+{% if network_interfaces is defined %}
 {% for netname,netif in network_interfaces.iteritems() %}
 ### {{ netname }} ###
 auto {{ netif.device }}
@@ -50,6 +51,7 @@ iface {{ netif.device }} inet6 {{ ipv6.method }}
 {% endfor %}
 
 {% endfor %}
+{% endif %}
 
 # Include files from /etc/network/interfaces.d:
 source-directory /etc/network/interfaces.d
