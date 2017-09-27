@@ -5,7 +5,3 @@
     src: network-interfaces.j2
     dest: "{{ root_target_directory | default('') }}/etc/network/interfaces"
 
-#- name: persistent net rules
-#  template:
-#    src: persistent-net.rules.j2
-#    dest: "{{ network_interfaces_target }}/etc/udev/rules.d/z25_persistent-net.rules"

@@ -1,3 +1,0 @@
-{% for netif in network_interfaces %}
-SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="{{ netif.mac_address }}", ATTR{type}=="1", KERNEL=="eth*", NAME="{{ netif.device }}"
-{% endfor %}
