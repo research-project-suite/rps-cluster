@@ -1,7 +1,11 @@
 ---
 
+- name: /etc/network directory
+  file:
+    path: "{{ root_target_directory | default('') }}/etc/network"
+    state: directory
+
 - name: network interfaces configuration
   template:
     src: network-interfaces.j2
     dest: "{{ root_target_directory | default('') }}/etc/network/interfaces"
-
