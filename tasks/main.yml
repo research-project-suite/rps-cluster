@@ -12,9 +12,12 @@
 
 - include: fetch.yml
   when:
-    ssh_host_key_state == 'fetched'
+    ssh_host_key_state == 'fetched' or
+    ssh_host_key_state == 'regenerated'
 
 - include: save.yml
   when:
     ssh_host_key_state == 'configured' or
-    ssh_host_key_state == 'scanned'
+    ssh_host_key_state == 'scanned' or
+    ssh_host_key_state == 'regenerated' or
+    ssh_host_key_state == 'saved'
