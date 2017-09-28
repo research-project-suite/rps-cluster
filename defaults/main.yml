@@ -1,3 +1,7 @@
 ssh_host_key_type: ed25519
+ssh_host_key_types:
+  - ed25519
+  - ecdsa
+  - rsa
 ssh_ip: "{{ansible_host}}"
 ssh_host_key_state: configured
