@@ -8,12 +8,17 @@
 
 - include: setup.yml
   when:
-    ssh_host_key_state == 'configured'
+    - ssh_host_key_state == 'configured'
+    - ansible_ssh_host_key_ed25519_public is defined
 
 - include: fetch.yml
   when:
-    ssh_host_key_state == 'fetched' or
-    ssh_host_key_state == 'regenerated'
+    - ssh_host_key_state == 'configured' or
+      ssh_host_key_state == 'fetched' or
+      ssh_host_key_state == 'regenerated'
+    - ssh_host_key_state == 'configured'
+      and not ansible_ssh_host_key_ed25519_public is defined
+      or not ssh_host_key_state == 'configured'
 
 - include: save.yml
   when:
