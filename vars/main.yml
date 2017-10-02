@@ -1,4 +1,0 @@
-_ssh_key_type:
-  ed25519: ssh-ed25519
-_ssh_host_key:
-  ed25519: "{{ ssh_host_key_ed25519_public | default(undefined) }}"
