@@ -1,10 +1,13 @@
 ---
 
-- name: install btrfs-tools
+- name: install debian packages
   apt:
-    pkg: btrfs-tools
+    pkg: "{{item}}"
     state: installed
   when: ansible_os_family=="Debian"
+  with_items:
+    - btrfs-tools
+    - dosfstools
 
 - name: unmount filesystems
   mount:
@@ -25,7 +28,16 @@
   when:
     item.device is defined and (
     filesystems_state == "mounted" or
-    filesystems_state == "formated" )
+    filesystems_state == "formated" ) and
+    not item.fstype == "fat32"
+
+- name: format fat32
+  command: mkfs.fat -F32 {{ item.device }}
+  with_items: "{{ filesystems }}"
+  when:
+    item.device is defined and
+    filesystems_state == "formated" and
+    item.fstype == "fat32"
 
 - name: mount filesystems
   mount:
