@@ -32,7 +32,6 @@ dependencies:
       - bridge-utils
       - console-setup
       - acpi-support
-  #- role: mdraid_mdadm_conf
   - role: dmcrypt_crypttab
     when: dmcrypt_devices is defined
   - role: filesystems
