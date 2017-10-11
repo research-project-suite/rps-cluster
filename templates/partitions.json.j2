@@ -1,0 +1,91 @@
+[
+{% set partition_name_prefix = inventory_hostname_short + '-' + name %}
+{% if partitioning_profile == "bios-dmcrypt-lvm" %}
+{
+  "part_type": "primary",
+  "fs_type": "btrfs",
+  "start": "768MiB",
+  "end": "1GiB"
+}
+{
+  "part_type": "primary",
+  "fs_type": "btrfs",
+  "start": "1GiB",
+  "end": "2GiB"
+}
+{
+  "part_type": "primary",
+  "fs_type": "btrfs",
+  "start": "2GiB",
+  "end": "6GiB"
+}
+{
+  "part_type": "primary",
+  "start": "6GiB",
+  "end": "-1MiB"
+}
+{% endif %}
+{% if partitioning_profile == "efi-dmcrypt-lvm" %}
+{
+  "part_type": "ESP",
+  "start": "256MiB",
+  "end": "768MiB"
+},
+{
+  "name": "select",
+  "start": "768MiB",
+  "end": "1GiB"
+},
+{
+  "name": "{{partition_name_prefix}}-boot",
+  "typecode": "8300",
+  "start": "1GiB",
+  "end": "2GiB"
+},
+{
+  "name": "{{partition_name_prefix}}-rescue",
+  "typecode": "8300",
+  "start": "2GiB",
+  "end": "6GiB"
+},
+{
+  "name": "{{partition_name_prefix}}-crypt",
+  "typecode": "8300",
+  "start": "6GiB",
+  "end": "-1MiB"
+}
+{% endif %}
+{% if partitioning_profile == "efi-mdraid-lvm" %}
+{% if efi_device_name == name %}
+{
+  "name": "{{_efi_partlabel}}",
+  "start": "256MiB",
+  "end": "768MiB",
+  "flags": ["boot"]
+},
+{
+  "name": "{{_select_partlabel}}",
+  "start": "768MiB",
+  "end": "1GiB"
+},
+{% endif %}
+{
+  "name": "{{partition_name_prefix}}-boot-md",
+  "start": "1GiB",
+  "end": "2GiB",
+  "mdraid": "boot"
+},
+{
+  "name": "{{partition_name_prefix}}-rescue-md",
+  "start": "2GiB",
+  "end": "6GiB",
+  "mdraid": "rescue"
+},
+{
+  "name": "{{partition_name_prefix}}-vg0-md",
+  "start": "6GiB",
+  "end": "-1MiB",
+  "mdraid": "vg0"
+}
+{% endif %}
+]

@@ -1,0 +1,21 @@
+[
+{#
+{% if hard_disks is defined %}
+{% for hard_disk in hard_disks %}
+{{hard_disk}},
+{% endfor %}
+{% else %}
+#}
+{% set efi_device_name = ansible_devices.keys() | first %}
+{% for device in ansible_devices.keys() %}
+{% set name = device %}
+{% set device = '/dev/' + device %}
+{
+  "device": "{{device}}",
+  "name": "{{name}}",
+  "label_type": "{{ _label_type[partitioning_profile] }}",
+  "partitions": {% include "partitions.json.j2" %}
+},
+{% endfor %}
+{#{% endif %}#}
+]
