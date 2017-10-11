@@ -6,14 +6,24 @@
 - include: setup_Debian.yml
   when: ansible_os_family == "Debian"
 
-#- include: gdisk.yml
-
 - name: write partition table
   command:
     parted --script
     {{ item.device }}
-    -- {{ lookup('template','parted_args.j2') }}
+    -- mklabel {{ item.label_type }}
   with_items: "{{ hard_disks }}"
+
+- name: write partitions
+  command:
+    parted --script
+    {{ item.0.device }}
+    -- {{ lookup('template','parted_partitions_args.j2') }}
+  with_subelements:
+    - "{{ hard_disks }}"
+    - partitions
+
+- fail:
+    msg: here
 
 - name: sync
   command: sync

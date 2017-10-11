@@ -1,7 +1,7 @@
-mklabel {{ item.label_type }}
-{% for part in item.partitions  %}
+{% set disk = item.0 %}
+{% set part = item.1 %}
 mkpart
-{% if item.label_type == "msdos" or item.label_type == "dvh" %}
+{% if disk.label_type == "msdos" or disk.label_type == "dvh" %}
 "{{ part.part_type }}"
 {% endif %}
 {% if part.fs_type is defined %}
@@ -18,4 +18,3 @@ mkpart
 set {{ outer_loop.index }} {{ flag }} on
 {% endfor %}
 {% endif %}
-{% endfor %}
