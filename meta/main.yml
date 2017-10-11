@@ -33,7 +33,8 @@ dependencies:
   #- role: mdraid_mdadm_conf
   - role: dmcrypt_crypttab
     when: dmcrypt_devices is defined
-  - role: fstab
+  - role: filesystems
+    filesystems_state: configured
   - role: keyboard_configuration
   - role: grub_bootloader
   - role: network_interfaces
