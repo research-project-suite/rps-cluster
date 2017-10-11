@@ -1,0 +1,1 @@
+fstab_file: "{{ root_target_directory | default('') }}/etc/fstab"

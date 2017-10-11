@@ -1,6 +1,12 @@
---
+---
 
-- name: swap
+- name: format
+  command: mkswap -U {{ item.uuid }} {{ item.device }}
+  with_items: "{{ swap_devices }}"
+  when:
+    swap_devices_state == "formated"
+
+- name: fstab for swap devices
   mount:
     name: none
     src: UUID={{ item.uuid }}
@@ -9,4 +15,7 @@
     passno: 0
     dump: 0
     state: present
+    fstab: "{{ fstab_file }}"
   with_items: "{{ swap_devices }}"
+  when:
+    swap_devices_state == "configured"
