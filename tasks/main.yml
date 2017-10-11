@@ -1,8 +1,5 @@
 ---
 
-- setup:
-    gather_subset: "!all"
-
 - include: setup_Debian.yml
   when: ansible_os_family == "Debian"
 
