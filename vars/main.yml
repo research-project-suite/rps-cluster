@@ -6,6 +6,7 @@ _host_vars:
   volume_groups: "{{ _volume_groups[partitioning_profile] }}"
   logical_volumes: "{{ _logical_volumes[partitioning_profile] }}"
   filesystems: "{{ _filesystems[partitioning_profile] }}"
+  swap_devices: "{{ _swap_devices[partitioning_profile] }}"
 
 _label_type:
   efi-mdraid-lvm: gpt
@@ -86,6 +87,7 @@ _fs_uuid_root:   "{{ lookup('pipe','uuid -v5 '+filesystem_uuid_namespace+' root'
 _fs_uuid_boot:   "{{ lookup('pipe','uuid -v5 '+filesystem_uuid_namespace+' boot') }}"
 _fs_uuid_rescue: "{{ lookup('pipe','uuid -v5 '+filesystem_uuid_namespace+' rescue') }}"
 _fs_uuid_select: "{{ lookup('pipe','uuid -v5 '+filesystem_uuid_namespace+' select') }}"
+_fs_uuid_swap:   "{{ lookup('pipe','uuid -v5 '+filesystem_uuid_namespace+' swap') }}"
 
 
 _filesystems:
@@ -163,3 +165,17 @@ _filesystems:
     - device: /dev/disk/by-partlabel/{{_efi_partlabel}}
       mount_point: /boot/efi
       fstype: vfat
+
+_swap_devices:
+  bios-mbr-dmcrypt-lvm:
+    - device: /dev/{{_volume_group_name}}/swap
+      uuid: "{{ _fs_uuid_swap }}"
+  efi-dmcrypt-lvm:
+    - device: /dev/{{_volume_group_name}}/swap
+      uuid: "{{ _fs_uuid_swap }}"
+  bios-gpt-mdraid-lvm:
+    - device: /dev/{{_volume_group_name}}/swap
+      uuid: "{{ _fs_uuid_swap }}"
+  efi-mdraid-lvm:
+    - device: /dev/{{_volume_group_name}}/swap
+      uuid: "{{ _fs_uuid_swap }}"
