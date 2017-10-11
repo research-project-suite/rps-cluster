@@ -1,20 +1,23 @@
 {% set disk = item.0 %}
 {% set part = item.1 %}
 mkpart
-{% if disk.label_type == "msdos" or disk.label_type == "dvh" %}
+{% if disk.label_type == "msdos" %}
 "{{ part.part_type }}"
+{% endif %}
+{% if disk.label_type == "gpt" %}
+"{{ part.name }}"
 {% endif %}
 {% if part.fs_type is defined %}
 "{{ part.fs_type }}"
 {% endif %}
-{% if part.name is defined %}
-"{{ part.name }}"
-{% endif %}
 "{{ part.start }}"
 "{{ part.end }}"
+
+{#
 {% if part.flags is defined %}
 {% set outer_loop = loop %}
 {% for flag in part.flags %}
 set {{ outer_loop.index }} {{ flag }} on
 {% endfor %}
 {% endif %}
+#}

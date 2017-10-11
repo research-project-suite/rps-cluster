@@ -13,7 +13,7 @@
     -- mklabel {{ item.label_type }}
   with_items: "{{ hard_disks }}"
 
-- name: write partitions
+- name: create partitions
   command:
     parted --script
     {{ item.0.device }}
@@ -22,8 +22,12 @@
     - "{{ hard_disks }}"
     - partitions
 
-- fail:
-    msg: here
+- name: set flags
+  command:
+    parted --script
+    {{ item.device }}
+    -- {{ lookup('template','parted_flags_args.j2') }}
+  with_items: "{{ hard_disks }}"
 
 - name: sync
   command: sync
