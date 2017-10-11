@@ -10,7 +10,8 @@ _host_vars:
 _label_type:
   efi-mdraid-lvm: gpt
   efi-dmcrypt-lvm: gpt
-  bios-dmcrypt-lvm: msdos
+  bios-mbr-dmcrypt-lvm: msdos
+  bios-gpt-mdraid-lvm: gpt
 
 _dmcrypt_device_name: "{{inventory_hostname_short}}-crypt0"
 _volume_group_name: "{{inventory_hostname_short}}-vg0"
@@ -18,8 +19,15 @@ _select_partlabel: "{{inventory_hostname_short}}-select"
 _efi_partlabel: "{{inventory_hostname_short}}-efi"
 
 _mdraid_devices:
-  bios-dmcrypt-lvm: []
+  bios-mbr-dmcrypt-lvm: []
   efi-dmcrypt-lvm: []
+  bios-gpt-mdraid-lvm:
+    - device: /dev/md/vg0
+      devices: "{{ hard_disks | json_query(\"[].partitions[?mdraid=='vg0'][].name\") | map('regex_replace','(.*)','/dev/disk/by-partlabel/\\1')  | list }}"
+    - device: /dev/md/boot
+      devices: "{{ hard_disks | json_query(\"[].partitions[?mdraid=='boot'][].name\") | map('regex_replace','(.*)','/dev/disk/by-partlabel/\\1')  | list }}"
+    - device: /dev/md/rescue
+      devices: "{{ hard_disks | json_query(\"[].partitions[?mdraid=='rescue'][].name\") | map('regex_replace','(.*)','/dev/disk/by-partlabel/\\1')  | list }}"
   efi-mdraid-lvm:
     - device: /dev/md/vg0
       devices: "{{ hard_disks | json_query(\"[].partitions[?mdraid=='vg0'][].name\") | map('regex_replace','(.*)','/dev/disk/by-partlabel/\\1')  | list }}"
@@ -30,6 +38,7 @@ _mdraid_devices:
 
 _dmcrypt_devices:
   efi-mdraid-lvm: []
+  bios-gpt-mdraid-lvm: []
   #- device: "{{ _crypt_device[partitioning_profile] }}"
   #  name: "{{inventory_hostname}}-crypt0"
   #  cipher: aes-xts-plain64
@@ -39,9 +48,8 @@ _dmcrypt_devices:
   #bios-dmcrypt-lvm: "{{ hard_disk_device }}-part4"
   #efi-dmcrypt-lvm: /dev/disk/by-partlabel/{{inventory_hostname}}-crypt
 
-
 _volume_groups:
-  bios-dmcrypt-lvm:
+  bios-mbr-dmcrypt-lvm:
     - name: "{{_volume_group_name}}"
       devices:
         - /dev/mapper/{{_dmcrypt_device_name}}
@@ -49,27 +57,16 @@ _volume_groups:
     - name: "{{_volume_group_name}}"
       devices:
         - /dev/mapper/{{_dmcrypt_device_name}}
+  bios-gpt-mdraid-lvm:
+    - name: "{{_volume_group_name}}"
+      devices:
+        - /dev/md/vg0
   efi-mdraid-lvm:
     - name: "{{_volume_group_name}}"
       devices:
         - /dev/md/vg0
 
-_logical_volumes:
-  bios-dmcrypt-lvm:
-    - name: root
-      size: 32G
-      volume_group: "{{_volume_group_name}}"
-    - name: swap
-      size: 1G
-      volume_group: "{{_volume_group_name}}"
-  efi-dmcrypt-lvm:
-    - name: root
-      size: 32G
-      volume_group: "{{_volume_group_name}}"
-    - name: swap
-      size: 1G
-      volume_group: "{{_volume_group_name}}"
-  efi-mdraid-lvm:
+_logical_volumes_default:
     - name: root
       size: 32G
       volume_group: "{{_volume_group_name}}"
@@ -79,6 +76,11 @@ _logical_volumes:
     #- name: home
     #  size: 100%FREE
     #  volume_group: vg
+_logical_volumes:
+  bios-mbr-dmcrypt-lvm: "{{_logical_volumes_default}}"
+  efi-dmcrypt-lvm: "{{_logical_volumes_default}}"
+  bios-gpt-mdraid-lvm: "{{_logical_volumes_default}}"
+  efi-mdraid-lvm: "{{_logical_volumes_default}}"
 
 _fs_uuid_root:   "{{ lookup('pipe','uuid -v5 '+filesystem_uuid_namespace+' root') }}"
 _fs_uuid_boot:   "{{ lookup('pipe','uuid -v5 '+filesystem_uuid_namespace+' boot') }}"
@@ -87,7 +89,7 @@ _fs_uuid_select: "{{ lookup('pipe','uuid -v5 '+filesystem_uuid_namespace+' selec
 
 
 _filesystems:
-  #bios-dmcrypt-lvm:
+  #bios-mbr-dmcrypt-lvm:
   #  - device: /dev/vg/root
   #    mount_point: /
   #    fstype: btrfs
@@ -124,6 +126,23 @@ _filesystems:
     - device: /dev/disk/by-partlabel/{{_efi_partlabel}}
       mount_point: /boot/efi
       fstype: vfat
+  bios-gpt-mdraid-lvm:
+    - device: /dev/{{_volume_group_name}}/root
+      mount_point: /
+      fstype: btrfs
+      uuid: "{{ _fs_uuid_root }}"
+    - device: /dev/md/boot
+      mount_point: /boot
+      fstype: btrfs
+      uuid: "{{ _fs_uuid_boot }}"
+    - device: /dev/md/rescue
+      mount_point: /boot/rescue
+      fstype: btrfs
+      uuid: "{{ _fs_uuid_rescue }}"
+    - device: /dev/disk/by-partlabel/{{_select_partlabel}}
+      mount_point: /boot/select
+      fstype: btrfs
+      uuid: "{{ _fs_uuid_select }}"
   efi-mdraid-lvm:
     - device: /dev/{{_volume_group_name}}/root
       mount_point: /

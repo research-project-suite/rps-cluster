@@ -6,10 +6,11 @@
 {% endfor %}
 {% else %}
 #}
-{% set efi_device_name = ansible_devices.keys() | first %}
+{% set first_device_name = ansible_devices.keys() | first %}
 {% for device in ansible_devices.keys() %}
 {% set name = device %}
 {% set device = '/dev/' + device %}
+{% set first_device = first_device_name == name %}
 {
   "device": "{{device}}",
   "name": "{{name}}",
