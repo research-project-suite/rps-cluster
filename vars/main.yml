@@ -71,7 +71,7 @@ _logical_volumes_default:
       size: 32G
       volume_group: "{{_volume_group_name}}"
     - name: swap
-      size: 1G
+      size: 2G
       volume_group: "{{_volume_group_name}}"
     #- name: home
     #  size: 100%FREE
