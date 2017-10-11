@@ -1,0 +1,3 @@
+# DESTROYS EVERYTHING! DON'T USE IF YOU DON'T KNOW WHAT YOU ARE DOING!
+# ONLY USE ON FRESH AND NON-PRODUCTIVE SYSTEMS
+umount /target/boot/* /target/* /target; vgchange -an; mdadm --stop /dev/md*; mdadm -zero-superblock /dev/sd*; mdadm --stop /dev/md*;
