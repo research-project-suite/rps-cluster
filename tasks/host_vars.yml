@@ -1,0 +1,17 @@
+---
+
+- name: host_vars directory
+  local_action:
+    file
+    path={{ playbook_dir }}/host_vars/{{inventory_hostname}}
+    state=directory
+
+- name: host_vars file
+  local_action:
+    template
+    src=host_vars.yml.j2
+    dest={{ playbook_dir }}/host_vars/{{inventory_hostname}}/{{_host_vars_filename}}.yml
+
+- name: include host_vars
+  include_vars:
+    dir: "{{ playbook_dir }}/host_vars/{{inventory_hostname}}/"
