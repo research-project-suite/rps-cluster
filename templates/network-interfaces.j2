@@ -139,7 +139,6 @@ iface {{ dev }} inet6 static
 iface {{ dev }} inet6 static
       address   {{ ip.ip | ipv6('address') }}
       netmask   {{ ip.ip | ipv6('prefix') }}
-      #gateway
 {% if netifs[netif].dns_resolvers is defined and netifs[netif].dns_resolvers | ipv6 %}
       dns-nameservers {{ netifs[netif].dns_resolvers | ipv6 | join(" ") }}
 {% endif %}
@@ -154,7 +153,10 @@ iface {{ dev }} inet static
       network   {{ ip.ip | ipv4('network') }}
       netmask   {{ ip.ip | ipv4('prefix') }}
       broadcast {{ ip.ip | ipv4('broadcast') }}
-      #gateway
+{% if loop.index == 1 and netifs[netif].routes is defined %}
+{% set default_route = netifs[netif].routes | json_query("[?to=='default']") | first %}
+      gateway {{default_route.via}}
+{% endif %}
 {% if netifs[netif].dns_resolvers is defined and netifs[netif].dns_resolvers | ipv4 %}
       dns-nameservers {{ netifs[netif].dns_resolvers | ipv4 | join(" ") }}
 {% endif %}
