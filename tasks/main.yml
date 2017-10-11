@@ -25,4 +25,11 @@
     ssh_host_key_state == 'configured' or
     ssh_host_key_state == 'scanned' or
     ssh_host_key_state == 'regenerated' or
+    ssh_host_key_state == 'fetched'
+
+- include: file.yml
+  when:
+    ssh_host_key_state == 'configured' or
+    ssh_host_key_state == 'scanned' or
+    ssh_host_key_state == 'regenerated' or
     ssh_host_key_state == 'saved'

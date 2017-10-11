@@ -5,12 +5,3 @@
 
 - name: host_vars file
   local_action: template src=host_vars.j2 dest=host_vars/{{inventory_hostname}}/ssh_host_key.yml
-
-- name: write ssh_known_hosts file
-  local_action: known_hosts
-  args:
-    path: "{{ playbook_dir }}/ssh_known_hosts"
-    name: "{{ item }}"
-    key: "{{ item }},{{ hostvars[item].ssh_ip }} ssh-ed25519 {{ hostvars[item].ssh_host_key_ed25519_public }}"
-  with_items: "{{play_hosts}}"
-  run_once: true
