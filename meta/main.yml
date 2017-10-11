@@ -15,6 +15,8 @@ dependencies:
     when: logical_volumes is defined
   - role: filesystems
     filesystems_state: formated
+  - role: swap_devices
+    swap_devices_state: formated
   - role: debootstrap
     debootstrap_include:
       - linux-image-amd64
@@ -35,6 +37,8 @@ dependencies:
     when: dmcrypt_devices is defined
   - role: filesystems
     filesystems_state: configured
+  - role: swap_devices
+    swap_devices_state: configured
   - role: keyboard_configuration
   - role: grub_bootloader
   - role: network_interfaces
