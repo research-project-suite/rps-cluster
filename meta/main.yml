@@ -18,6 +18,8 @@ dependencies:
   - role: debootstrap
     debootstrap_include:
       - linux-image-amd64
+      - busybox
+      - busybox-static
       - mdadm
       - lvm2
       - cryptsetup
