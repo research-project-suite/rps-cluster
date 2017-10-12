@@ -7,14 +7,16 @@
   command:
     parted --script
     {{ item.device }}
-    -- mklabel {{ item.label_type }}
+    -- unit kiB
+    mklabel {{ item.label_type }}
   with_items: "{{ hard_disks }}"
 
 - name: create partitions
   command:
     parted --script
     {{ item.0.device }}
-    -- {{ lookup('template','parted_partitions_args.j2') }}
+    -- unit kiB
+    {{ lookup('template','parted_partitions_args.j2') }}
   with_subelements:
     - "{{ hard_disks }}"
     - partitions
@@ -23,7 +25,8 @@
   command:
     parted --script
     {{ item.device }}
-    -- {{ lookup('template','parted_flags_args.j2') }}
+    -- unit kiB
+    {{ lookup('template','parted_flags_args.j2') }}
   with_items: "{{ hard_disks }}"
 
 - name: sync
