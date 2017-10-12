@@ -1,1 +1,0 @@
-_mdraid_devices: "{{ lookup('template','set_fact-mdraid_devices.j2') | from_yaml }}"
