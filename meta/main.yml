@@ -19,7 +19,6 @@ dependencies:
     swap_devices_state: formated
   - role: debootstrap
     debootstrap_include:
-      - eatmydata
       - linux-image-amd64
       - busybox
       - busybox-static
