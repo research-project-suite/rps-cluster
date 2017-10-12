@@ -22,7 +22,7 @@
 {
   "part_type": "primary",
   "start": "6GiB",
-  "end": "-1MiB"
+  "end": "{{ partitioning_profile_last_partition_end }}"
 }
 {% endif %}
 {% if partitioning_profile == "efi-dmcrypt-lvm" %}
@@ -52,7 +52,7 @@
   "name": "{{partition_name_prefix}}-crypt",
   "typecode": "8300",
   "start": "6GiB",
-  "end": "-1MiB"
+  "end": "{{ partitioning_profile_last_partition_end }}"
 }
 {% endif %}
 {% if partitioning_profile == "bios-gpt-mdraid-lvm" %}
@@ -84,7 +84,7 @@
 {
   "name": "{{partition_name_prefix}}-vg0-md",
   "start": "6GiB",
-  "end": "-1MiB",
+  "end": "{{ partitioning_profile_last_partition_end }}",
   "mdraid": "vg0"
 }
 {% endif %}
@@ -117,7 +117,7 @@
 {
   "name": "{{partition_name_prefix}}-vg0-md",
   "start": "6GiB",
-  "end": "-1MiB",
+  "end": "{{ partitioning_profile_last_partition_end }}",
   "mdraid": "vg0"
 }
 {% endif %}
