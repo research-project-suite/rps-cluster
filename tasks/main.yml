@@ -20,7 +20,7 @@
 
 - name: debootstrap
   command:
-    eatmydata debootstrap
+    debootstrap
     {{debootstrap_args}}
     {{debootstrap_suite}}
     {{root_target_directory}}
