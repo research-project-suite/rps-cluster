@@ -5,11 +5,28 @@
   async: 0
   poll: 0
   ignore_errors: true
+  when:
+    reboot_state == "rebooted" or
+    reboot_state == "started"
 
 - name: wait for ssh
   local_action: wait_for host={{ ansible_host | default(inventory_hostname)  }} port=22 search_regex=OpenSSH delay={{ reboot_delay }} timeout={{ reboot_timeout }} state=started
+  when:
+    reboot_state == "rebooted" or
+    reboot_state == "finished"
 
 - name: try to connect to ssh
   setup:
-  retries: 10
+  retries: 6
   delay: 5
+  when:
+    reboot_state == "rebooted" or
+    reboot_state == "finished"
+
+- name: check uptime fpr sucsessfull reboot
+  fail:
+    msg: host did not reboot; uptime is {{ansible_uptime_seconds}} seconds
+  when:
+    - ansible_uptime_seconds > reboot_delay + reboot_timeout
+    - reboot_state == "rebooted" or
+      reboot_state == "finished"
