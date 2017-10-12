@@ -1,4 +1,8 @@
 ---
 
-- name: debian apt install debootstrap
-  apt: pkg=debootstrap state=installed
+- name: debian packages installed
+  apt:
+    pkg: "{{item}}"
+  with_items:
+    - debootstrap
+    - eatmydata
