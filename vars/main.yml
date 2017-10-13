@@ -1,4 +1,5 @@
 _host_vars_filename: partitioning
+_host_vars_default: {}
 _host_vars:
   hard_disks: "{{ hard_disks }}"
   mdraid_devices: "{{ _mdraid_devices[partitioning_profile] }}"
