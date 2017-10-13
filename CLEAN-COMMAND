@@ -1,11 +1,17 @@
 # DESTROYS EVERYTHING! DON'T USE IF YOU DON'T KNOW WHAT YOU ARE DOING!
 # ONLY USE ON FRESH AND NON-PRODUCTIVE SYSTEMS
+kill -KILL `lsof -t /target`
 umount /target/boot/* /target/* /target
 wipefs --all /dev/dm-*
 vgchange -an
-wipefs --all /dev/md*
 pvremove -ff -y /dev/md*
+vgchange -an
+wipefs --all /dev/md*
 mdadm --stop /dev/md*
 mdadm --zero-superblock /dev/sd*
 mdadm --stop /dev/md*
+vgchange -an
+pvremove -ff -y /dev/sd*
+vgchange -an
+wipefs --all /dev/sd*
 wipefs --all /dev/sd*
