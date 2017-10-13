@@ -1,19 +1,17 @@
 ---
 
 - name: reboot
-  shell:
-    sleep {{reboot_command_after_seconds}} &&
-    logger "Reboot triggered by Ansible script" &&
+  command:
+    systemd-run --on-active={{reboot_command_after_seconds}}
     shutdown -r now "Reboot triggered by Ansible script"
-  async: 1
-  poll: 0
+  #async: 1
+  #poll: 0
   #ignore_errors: true
   when: reboot_command
 
 - name: let server reboot
   pause:
     seconds: "{{ reboot_pause_seconds }}"
-  when: reboot_pause
 
 - name: wait for ssh
   local_action: wait_for
@@ -24,15 +22,14 @@
     delay: 0
     timeout: "{{ reboot_wait_timeout_seconds }}"
     state: started
-  when: reboot_wait
+
+- include_role:
+    name: ssh_host_key
 
 - name: try to connect to ssh
   setup:
-  when: reboot_check
 
-- name: check uptime for sucsessfull reboot
-  fail:
-    msg: host did not reboot; uptime is {{ansible_uptime_seconds}} seconds
-  when:
-    - reboot_check
-    - ansible_uptime_seconds > reboot_uptime_max_seconds
+- name: check uptime for successful reboot
+  set_fact:
+    reboot_uptime: "{{ ansible_uptime_seconds }}"
+  failed_when: ansible_uptime_seconds > reboot_uptime_max_seconds

@@ -1,10 +1,7 @@
 reboot_command: true
-reboot_pause:  true
-reboot_wait: true
-reboot_check: true
 
-reboot_command_after_seconds: 5
+reboot_command_after_seconds: 10
 reboot_pause_seconds: 120
 reboot_wait_timeout_seconds: 300
 
-reboot_uptime_max_seconds: "{{ reboot_delay + reboot_timeout }}"
+reboot_uptime_max_seconds: "{{ reboot_pause_seconds - reboot_command_after_seconds + reboot_wait_timeout_seconds }}"
