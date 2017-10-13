@@ -1,38 +1,38 @@
 ---
 
 - name: reboot
-  command: shutdown --no-wall -r +1
-  async: 0
+  shell:
+    sleep {{reboot_command_after_seconds}} &&
+    logger "Reboot triggered by Ansible script" &&
+    shutdown -r now "Reboot triggered by Ansible script"
+  async: 1
   poll: 0
-  ignore_errors: true
-  when:
-    reboot_state == "rebooted" or
-    reboot_state == "started"
+  #ignore_errors: true
+  when: reboot_command
 
 - name: let server reboot
   pause:
-    seconds: "{{ reboot_delay }}"
-  when:
-    reboot_state == "rebooted" or
-    reboot_state == "reachable"
+    seconds: "{{ reboot_pause_seconds }}"
+  when: reboot_pause
 
 - name: wait for ssh
-  local_action: wait_for host={{ ansible_host | default(inventory_hostname)  }} port=22 search_regex=OpenSSH delay=0 timeout={{ reboot_timeout }} state=started
-  when:
-    reboot_state == "rebooted" or
-    reboot_state == "reachable" or
-    reboot_state == "finished"
+  local_action: wait_for
+  args:
+    host: "{{ ansible_host | default(inventory_hostname)  }}"
+    port: 22
+    search_regex: OpenSSH
+    delay: 0
+    timeout: "{{ reboot_wait_timeout_seconds }}"
+    state: started
+  when: reboot_wait
 
 - name: try to connect to ssh
   setup:
-  when:
-    reboot_state == "rebooted" or
-    reboot_state == "finished"
+  when: reboot_check
 
 - name: check uptime for sucsessfull reboot
   fail:
     msg: host did not reboot; uptime is {{ansible_uptime_seconds}} seconds
   when:
-    - reboot_state == "rebooted" or
-      reboot_state == "finished"
-    - ansible_uptime_seconds > reboot_delay + reboot_timeout
+    - reboot_check
+    - ansible_uptime_seconds > reboot_uptime_max_seconds
