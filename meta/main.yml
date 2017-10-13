@@ -46,3 +46,5 @@ dependencies:
     ssh_host_key_state: fetched
   - role: filesystems
     filesystems_state: unmounted
+  - role: reboot
+    ssh_host_key_state: saved
