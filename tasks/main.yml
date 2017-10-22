@@ -28,6 +28,7 @@
     -- unit kiB
     {{ lookup('template','parted_flags_args.j2') }}
   with_items: "{{ hard_disks }}"
+  when: ( item.partitions | json_query("[].flags") | length ) > 0
 
 - name: sync
   command: sync
