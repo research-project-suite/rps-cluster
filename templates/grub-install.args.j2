@@ -1,0 +1,12 @@
+{% if grub_bootloader_target is defined %}
+--target={{ grub_bootloader_target }}
+{% endif %}
+{% if efi_directory is defined %}
+--efi-directory={{efi_directory}}
+{% endif %}
+{% if grub_bootloader_id is defined %}
+--bootloader-id={{grub_bootloader_id}}
+{% endif %}
+{% if grub_bootloader_recheck is defined and grub_bootloader_recheck %}
+--recheck
+{% endif %}

@@ -11,7 +11,11 @@
     dest: "{{ root_target_directory }}/etc/default/grub"
 
 - name: grub-install
-  command: chroot {{ root_target_directory }} grub-install {{ item }}
+  command:
+    chroot {{ root_target_directory }}
+    grub-install
+    {{ lookup('template','grub-install.args.j2') }} 
+    {{ item }}
   with_items: "{{ boot_devices }}"
 
 - name: update-grub
