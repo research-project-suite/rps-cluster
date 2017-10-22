@@ -27,11 +27,12 @@ dependencies:
       - cryptsetup
       - openssh-server
       - btrfs-tools
-      - grub-pc
+      - "{{ grub_bootloader_package }}"
       - python
       - bridge-utils
       - console-setup
       - acpi-support
+      - efibootmgr
   - role: dmcrypt_crypttab
     when: dmcrypt_devices is defined
   - role: filesystems
