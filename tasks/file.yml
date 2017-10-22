@@ -1,10 +1,10 @@
 ---
-  
+
 - name: write ssh_known_hosts file
   local_action: known_hosts
   args:
     path: "{{ playbook_dir }}/ssh_known_hosts"
     name: "{{ item }}"
-    key: "{{ item }},{{ hostvars[item].ssh_ip }} ssh-ed25519 {{ hostvars[item].ssh_host_key_ed25519_public }}"
+    key: "{{ lookup('template','ssh_host_key.j2') }}"
   with_items: "{{play_hosts}}"
   run_once: true
