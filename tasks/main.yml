@@ -26,18 +26,20 @@
     force: "{{ filesystems_state == 'formated' }}"
   with_items: "{{ filesystems }}"
   when:
-    item.device is defined and (
-    filesystems_state == "mounted" or
-    filesystems_state == "formated" ) and
-    not item.fstype == "vfat"
+    - item.device is defined
+    - filesystems_state == "mounted" or
+      filesystems_state == "formated"
+    - not item.fstype == "vfat"
+    - not (item.keep is defined and item.keep)
 
 - name: format fat32
   command: mkfs.fat -F32 {{ item.device }}
   with_items: "{{ filesystems }}"
   when:
-    item.device is defined and
-    filesystems_state == "formated" and
-    item.fstype == "vfat"
+    - item.device is defined
+    - filesystems_state == "formated"
+    - item.fstype == "vfat"
+    - not (item.keep is defined and item.keep)
 
 - name: mount filesystems
   mount:
