@@ -41,14 +41,15 @@ _mdraid_devices:
 _dmcrypt_devices:
   efi-mdraid-lvm: []
   bios-gpt-mdraid-lvm: []
-  #- device: "{{ _crypt_device[partitioning_profile] }}"
-  #  name: "{{inventory_hostname}}-crypt0"
-  #  cipher: aes-xts-plain64
-  #  hash: sha512
-  #  key_size: 512
-#_crypt_device:
+  efi-dmcrypt-lvm:
+    - device: "{{ _crypt_device[partitioning_profile] }}"
+      name: "{{inventory_hostname}}-crypt0"
+      cipher: aes-xts-plain64
+      hash: sha512
+      key_size: 512
+_crypt_device:
   #bios-dmcrypt-lvm: "{{ hard_disk_device }}-part4"
-  #efi-dmcrypt-lvm: /dev/disk/by-partlabel/{{inventory_hostname}}-crypt
+  efi-dmcrypt-lvm: /dev/disk/by-partlabel/{{inventory_hostname}}-crypt
 
 _volume_groups:
   bios-mbr-dmcrypt-lvm:
