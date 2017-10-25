@@ -8,17 +8,3 @@ debian_components:
 debootstrap_suite: "{{ debian_distribution }}"
 debootstrap_components: "{{ debian_components }}"
 debootstrap_arch: amd64
-debootstrap_include:
-  - linux-image-amd64
-  - openssh-server
-  - python
-  - console-setup
-  - dbus
-  - acpi
-  - acpi-support
-  - mdadm
-  - cryptsetup
-  - lvm2
-  - grub-pc
-  - bridge-utils
-  - busybox-static
