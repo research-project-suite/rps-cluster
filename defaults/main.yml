@@ -1,5 +1,5 @@
 root_user_aliases:
   - name: aptitude-list-manually-installed
-    command: aptitude search "!~prequired !~important ~i !~M"
+    command: aptitude search '!?priority(required) !?priority(important) ?installed !?automatic'
   - name: apt-tail-log
     command: tail -f /var/log/apt/term.log
