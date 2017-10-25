@@ -1,0 +1,6 @@
+---
+
+- name: root bashrc
+  template:
+    src: bashrc.j2
+    dest: /root/.bashrc
