@@ -8,6 +8,45 @@ _host_vars:
   logical_volumes: "{{ _logical_volumes[partitioning_profile] }}"
   filesystems: "{{ _filesystems[partitioning_profile] }}"
   swap_devices: "{{ _swap_devices[partitioning_profile] }}"
+  debian_base_packages: "{{ debian_base_packages }}"
+  debian_boot_packages: "{{ _debian_boot_packages[partitioning_profile] }}"
+
+debian_base_packages:
+  - linux-image-amd64
+  - busybox-static
+  - openssh-server
+  - python
+  - console-setup
+  - acpi-support
+  - bridge-utils
+
+_debian_boot_packages:
+  efi-dmcrypt-lvm:
+    - busybox-static
+    - lvm2
+    - cryptsetup
+    - btrfs-tools
+    - grub-efi-amd64
+    - efibootmgr
+  efi-mdraid-lvm:
+    - busybox-static
+    - mdadm
+    - lvm2
+    - btrfs-tools
+    - grub-efi-amd64
+    - efibootmgr
+  bios-mbr-dmcrypt-lvm:
+    - busybox-static
+    - lvm2
+    - cryptsetup
+    - btrfs-tools
+    - grub-pc
+  bios-gpt-mdraid-lvm:
+    - busybox-static
+    - mdadm
+    - lvm2
+    - btrfs-tools
+    - grub-pc
 
 _label_type:
   efi-mdraid-lvm: gpt
