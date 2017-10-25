@@ -18,21 +18,7 @@ dependencies:
   - role: swap_devices
     swap_devices_state: formated
   - role: debootstrap
-    debootstrap_include:
-      - linux-image-amd64
-      - busybox
-      - busybox-static
-      - mdadm
-      - lvm2
-      - cryptsetup
-      - openssh-server
-      - btrfs-tools
-      - "{{ grub_bootloader_package }}"
-      - python
-      - bridge-utils
-      - console-setup
-      - acpi-support
-      - efibootmgr
+    debootstrap_include: "{{ debian_base_packages | unison(debian_boot_packages) }}"
   - role: dmcrypt_crypttab
     when: dmcrypt_devices is defined
   - role: filesystems
