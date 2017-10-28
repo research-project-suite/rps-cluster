@@ -1,44 +1,11 @@
 ---
 
-- name: fish package
-  package:
-    name: fish
-
-- name: fish config directory
-  file:
-    path: /root/.config/fish/conf.d/
-    state: directory
-
-- name: fish config files
-  template:
-    src: "{{ item }}.fish.j2"
-    dest: /root/.config/fish/conf.d/{{ item }}.fish
-  with_items:
-    - root-shell-aliases
-
-- name: fish shell
-  user:
-    name: root
-    shell: /usr/bin/fish
-
-- name: fetch fish history
-  fetch:
-    src: /root/.local/share/fish/fish_history
-    dest: host_files
-
-- name: ssh key
-  user:
-    name: root
-    generate_ssh_key: yes
-    ssh_key_type: ed25519
-  when: root_ssh_key
-
 - name: password
   user:
     name: root
     password: "{{ root_password }}"
   when: root_password is defined
 
-- file:
-   path: /root/.config/fish/conf.d/title.fish
-   state: absent
+- include: ssh.yml
+
+- include: fish.yml
