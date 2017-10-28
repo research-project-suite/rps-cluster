@@ -21,6 +21,11 @@
     name: root
     shell: /usr/bin/fish
 
+- name: fetch fish history
+  fetch:
+    src: /root/.local/share/fish/fish_history
+    dest: host_files
+
 - name: ssh key
   user:
     name: root
