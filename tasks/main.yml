@@ -1,5 +1,8 @@
 ---
 
+- include: setup.yml
+  when: not root_target_directory is defined
+
 - name: /etc/network directory
   file:
     path: "{{ root_target_directory | default('') }}/etc/network"
