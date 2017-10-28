@@ -5,54 +5,6 @@
 auto lo
 iface lo inet loopback
 
-{% if network_interfaces is defined %}
-{% for netname,netif in network_interfaces.iteritems() %}
-### {{ netname }} ###
-auto {{ netif.device }}
-{% if netif.hotplug | default(false) %}
-allow-hotplug {{ netif.device }}
-{% endif %}
-
-{% if netif.bridge is defined %}
-iface {{ netif.device }} inet manual
-      bridge_ports {{ netif.bridge.ports | default(["none"]) | join(" ") }}
-      bridge_stp {{ netif.bridge.stp | default(false) | ternary('on','off') }}
-{% endif %}
-
-{% for ipv4 in netif.ipv4 | default([]) %}
-iface {{ netif.device }} inet {{ ipv4.method }}
-{% if ipv4.method == "static" %}
-      address {{ ipv4.address | ipv4('address') }}
-      network {{ ipv4.address | ipv4('network') }}
-      netmask {{ ipv4.address | ipv4('netmask') }}
-      broadcast {{ ipv4.address | ipv4('broadcast') }}
-{% if ipv4.gateway is defined %}
-      gateway {{ ipv4.gateway | ipv4('address') }}
-{% endif %}
-{% endif %}
-{% endfor %}
-
-{% for ipv6 in netif.ipv6 | default([]) %}
-iface {{ netif.device }} inet6 {{ ipv6.method }}
-{% if ipv6.method == "static" %}
-      address {{ ipv6.address | ipv6('address') }}
-      netmask {{ ipv6.address | ipv6('prefix') | default(128) }}
-{% if ipv6.gateway is defined %}
-{% if ( ( ipv6.address | ipv6('prefix') | int ) < 128 ) and ( ipv6.gateway | ipv6(ipv6.address) ) %}
-      gateway {{ ipv6.gateway | ipv6('address') }}
-{% else %}
-      post-up sleep 5; /sbin/ip -family inet6 route add {{ ipv6.gateway }} dev {{ netif.device }}
-      post-up sleep 5; /sbin/ip -family inet6 route add default via {{ ipv6.gateway }}
-      pre-down /sbin/ip -family inet6 route del default via {{ ipv6.gateway }}
-      pre-down /sbin/ip -family inet6 route del {{ ipv6.gateway }} dev {{ netif.device }}
-{% endif %}
-{% endif %}
-{% endif %}
-{% endfor %}
-
-{% endfor %}
-{% endif %}
-
 {% if netifs is defined %}
 {% for netif in netifs %}
 {% if netifs[netif].type == "ethernet" or netifs[netif].type == "virt" %}
