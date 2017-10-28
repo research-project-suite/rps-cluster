@@ -1,5 +1,9 @@
-root_user_aliases:
+root_ssh_key: false
+
+root_shell_aliases:
   - name: aptitude-list-manually-installed
+    description: list all manually installed packages without system packages
     command: aptitude search '!?priority(required) !?priority(important) ?installed !?automatic'
   - name: apt-tail-log
+    description: tail the apt log
     command: tail -f /var/log/apt/term.log

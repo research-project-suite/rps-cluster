@@ -1,0 +1,7 @@
+{{ ansible_managed | comment }}
+
+{% for alias in root_shell_aliases %}
+function {{ alias.name }} --description {{ alias.description  | quote }}
+  {{alias.command}} $argv
+end
+{% endfor %}
