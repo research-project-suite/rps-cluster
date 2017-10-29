@@ -18,7 +18,7 @@ dependencies:
   - role: swap_devices
     swap_devices_state: formated
   - role: debootstrap
-    debootstrap_include: "{{ debian_base_packages | unison(debian_boot_packages) }}"
+    debootstrap_include: "{{ debian_base_packages | union(debian_boot_packages) }}"
   - role: dmcrypt_crypttab
     when: dmcrypt_devices is defined
   - role: filesystems
