@@ -28,7 +28,7 @@ dependencies:
   - role: keyboard_configuration
   - role: grub_bootloader
   - role: network_interfaces
-  - role: ssh_root_access
+  - role: root_user
   - role: ssh_host_key
     ssh_host_key_state: fetched
   - role: filesystems
