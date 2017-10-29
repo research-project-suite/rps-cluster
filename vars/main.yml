@@ -8,10 +8,9 @@ _host_vars:
   logical_volumes: "{{ _logical_volumes[partitioning_profile] }}"
   filesystems: "{{ _filesystems[partitioning_profile] }}"
   swap_devices: "{{ _swap_devices[partitioning_profile] }}"
-  debian_base_packages: "{{ debian_base_packages }}"
-  debian_boot_packages: "{{ _debian_boot_packages[partitioning_profile] }}"
+  debian_boot_packages: "{{ _debian_boot_packages[partitioning_profile] | union(_debian_boot_packages_all) }}"
 
-debian_base_packages:
+_debian_boot_packages_all:
   - linux-image-amd64
   - busybox-static
   - openssh-server
@@ -89,6 +88,7 @@ _dmcrypt_devices:
 _crypt_device:
   #bios-dmcrypt-lvm: "{{ hard_disk_device }}-part4"
   efi-dmcrypt-lvm: /dev/disk/by-partlabel/{{inventory_hostname}}-crypt
+  bios-gpt-mdraid-lvm: []
 
 _volume_groups:
   bios-mbr-dmcrypt-lvm:
