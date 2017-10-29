@@ -4,6 +4,11 @@
   set_fact:
     filesystem_uuid_namespace: "{{ lookup('pipe','uuid -v4') }}"
 
+#- name: hard_disks debug
+#  debug:
+#    msg: "{{hard_disks}}"
+#  when: hard_disks is defined
+
 - name: set hard_disks
   set_fact:
     hard_disks: "{{lookup('template','hard_disks.json.j2')}}"
