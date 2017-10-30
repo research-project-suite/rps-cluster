@@ -3,16 +3,17 @@
 - name: fish package
   package:
     name: fish
+  when: not root_target_directory is defined
 
 - name: fish config directory
   file:
-    path: /root/.config/fish/conf.d/
+    path: "{{ root_target_directory | default('') }}/root/.config/fish/conf.d/"
     state: directory
 
 - name: fish config files
   template:
     src: "{{ item }}.fish.j2"
-    dest: /root/.config/fish/conf.d/{{ item }}.fish
+    dest: "{{ root_target_directory | default('') }}/root/.config/fish/conf.d/{{ item }}.fish"
   with_items:
     - root-shell-aliases
 
@@ -20,8 +21,10 @@
   user:
     name: root
     shell: /usr/bin/fish
+  when: not root_target_directory is defined
 
 - name: fetch fish history
   fetch:
     src: /root/.local/share/fish/fish_history
     dest: host_files
+  when: not root_target_directory is defined

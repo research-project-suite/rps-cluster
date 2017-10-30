@@ -1,10 +1,6 @@
 ---
 
-- name: password
-  user:
-    name: root
-    password: "{{ root_password }}"
-  when: root_password is defined
+- include: password.yml
 
 - include: ssh.yml
 
