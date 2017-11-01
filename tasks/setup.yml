@@ -1,5 +1,5 @@
 ---
-  
+
 - name: install resolvconf
   apt:
     name: resolvconf
@@ -9,4 +9,3 @@
   apt:
     name: rdnssd
     state: absent
-  when:
