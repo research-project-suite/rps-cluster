@@ -3,12 +3,40 @@
 - include: setup.yml
   when: not root_target_directory is defined
 
+- name: set netifs
+  set_fact:
+    _netifs: "{{ lookup('template','netifs.json.j2') }}"
+
 - name: /etc/network directory
   file:
     path: "{{ root_target_directory | default('') }}/etc/network"
     state: directory
 
-- name: network interfaces configuration
+- name: debian network interfaces configuration
   template:
-    src: network-interfaces.j2
+    src: network-interfaces-debian.j2
     dest: "{{ root_target_directory | default('') }}/etc/network/interfaces"
+  when:
+    - ( root_target_dist | default('debian') ) == "debian"
+
+- name: alpine network interfaces configuration
+  template:
+    src: network-interfaces-alpine.j2
+    dest: "{{ root_target_directory | default('') }}/etc/network/interfaces"
+  when:
+    - ( root_target_dist | default('debian') ) == "alpine"
+
+- name: /etc/network/interfaces.d directory
+  file:
+    path: "{{ root_target_directory | default('') }}/etc/network/interfaces.d"
+    state: directory
+  when:
+    - ( root_target_dist | default('debian') ) == "debian"
+
+- name: debian network interface configuration
+  template:
+    src: network-interface-debian.j2
+    dest: "{{ root_target_directory | default('') }}/etc/network/interfaces.d/{{ item }}"
+  with_items: "{{ _netifs }}"
+  when:
+    - ( root_target_dist | default('debian') ) == "debian"
