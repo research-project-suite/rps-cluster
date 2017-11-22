@@ -1,6 +1,6 @@
 ---
 
-- include: setup.yml
+- include_tasks: setup_{{ansible_os_family}}.yml
   when: not root_target_directory is defined
 
 - name: set netifs
