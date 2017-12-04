@@ -1,0 +1,13 @@
+[
+{% for lv in logical_volumes %}
+{{lv|to_json}},
+{% endfor %}
+{% for vol in partitioning_profile_volumes %}
+{% set lv = vol.lv %}
+{% set lv = lv | combine({
+  'volume_group': primary_volume_group_name
+}) %}
+{% set lv = lv | combine({ 'name': vol.name }) %}
+{{lv|to_json}},
+{% endfor %}
+]

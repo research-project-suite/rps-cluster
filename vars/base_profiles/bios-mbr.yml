@@ -16,3 +16,5 @@ partitions:
 
 debian_boot_packages:
   - grub-pc
+
+grub_bootloader_target: i386-pc

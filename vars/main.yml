@@ -1,53 +1,19 @@
 _host_vars_filename:     partitioning
 _host_vars_default:      {}
 _host_vars:
-  hard_disks:            "{{ hard_disks }}"
-  mdraid_devices:       "{{ mdraid_devices }}"
-  dmcrypt_devices:      "{{ dmcrypt_devices }}"
-  volume_groups:        "{{ volume_groups }}"
-  logical_volumes:      "{{ logical_volumes }}"
-  filesystems:          "{{ filesystems }}"
-  swap_devices:         "{{ swap_devices }}"
+  hard_disks: "{{ hard_disks }}"
+  mdraid_devices: "{{ mdraid_devices }}"
+  dmcrypt_devices: "{{ dmcrypt_devices }}"
+  volume_groups: "{{ volume_groups }}"
+  logical_volumes: "{{ logical_volumes }}"
+  filesystems: "{{ filesystems }}"
+  swap_devices: "{{ swap_devices }}"
   debian_boot_packages: "{{ debian_boot_packages }}"
-
-volume_groups:
-  - name: "{{primary_volume_group_name}}"
-    devices:
-      - "{{ system_device }}"
-
-logical_volumes:
-  - name: root
-    size: "{{root_partition_default_size}}"
-  - name: swap
-    size: "{{swap_partition_default_size}}"
-
-filesystems:
-  - device: "{{ boot_device }}"
-    mount_point: /boot
-    fstype: ext4
-  - device: "{{ rescue_device }}"
-    mount_point: /rescue
-    fstype: btrfs
-  - device: /dev/{{primary_volume_group_name}}/root
-    mount_point: /
-    fstype: btrfs
+  grub_cmdline_linux: "{{ grub_cmdline_linux }}"
+  grub_bootloader_target: "{{ grub_bootloader_target }}"
 
 _efi_partlabel: "{{inventory_hostname_short}}-efi"
 _efi_filesystems:
   - device: /dev/disk/by-partlabel/{{_efi_partlabel}}
     mount_point: /boot/efi
     fstype: vfat
-
-swap_devices:
-  - device: /dev/{{primary_volume_group_name}}/swap
-
-debian_boot_packages:
-  - linux-image-amd64
-  - busybox-static
-  - e2fsprogs
-  - btrfs-tools
-  - openssh-server
-  - python
-  - console-setup
-  - acpi-support
-  - bridge-utils

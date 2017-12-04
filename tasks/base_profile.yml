@@ -7,7 +7,8 @@
 
 - name: set base profile vars
   set_fact:
-    debian_boot_packages: "{{ debian_boot_packages | union(_partitioning_base_profile.debian_boot_packages) }}"
+    debian_boot_packages: "{{ _partitioning_base_profile.debian_boot_packages }}"
+    grub_bootloader_target: "{{ _partitioning_base_profile.grub_bootloader_target }}"
 
 - name: set hard disks base profile
   set_fact:

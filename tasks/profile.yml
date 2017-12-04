@@ -1,0 +1,15 @@
+---
+
+- name: load profile vars
+  include_vars:
+    file: profile.yml
+    name: _partitioning_profile
+
+- name: set profile vars
+  set_fact:
+    volume_groups: "{{ _partitioning_profile.volume_groups }}"
+    logical_volumes: "{{ _partitioning_profile.logical_volumes }}"
+    filesystems: "{{ _partitioning_profile.filesystems }}"
+    swap_devices: "{{ _partitioning_profile.swap_devices }}"
+    grub_cmdline_linux: "{{ _partitioning_profile.grub_cmdline_linux }}"
+    debian_boot_packages: "{{ debian_boot_packages|union(_partitioning_profile.debian_boot_packages) }}"

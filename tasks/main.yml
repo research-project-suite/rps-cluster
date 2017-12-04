@@ -8,7 +8,11 @@
 
 - import_tasks: crypt_profile.yml
 
+- import_tasks: profile.yml
+
 - import_tasks: efi_filesystem.yml
+
+- import_tasks: volumes.yml
 
 - import_tasks: filesystems.yml
 

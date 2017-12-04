@@ -31,3 +31,5 @@ partitions:
 debian_boot_packages:
   - efibootmgr
   - grub-efi-amd64
+
+grub_bootloader_target: x86_64-efi
