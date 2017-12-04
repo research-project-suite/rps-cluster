@@ -1,0 +1,12 @@
+---
+
+# - name: ansible_devices debug
+#   debug:
+#     msg: "{{ansible_devices}}"
+
+- name: scan hard disks
+  set_fact:
+    hard_disks: "{{lookup('template','hard_disks_scan.json.j2')}}"
+  when:
+    - not hard_disks is defined
+    - hard_disks_scan

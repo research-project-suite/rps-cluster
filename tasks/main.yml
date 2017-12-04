@@ -1,20 +1,17 @@
 ---
 
-- name: set filesystem uuid namespace
-  set_fact:
-    filesystem_uuid_namespace: "{{ lookup('pipe','uuid -v4') }}"
+- import_tasks: scan.yml
 
-#- name: hard_disks debug
-#  debug:
-#    msg: "{{hard_disks}}"
-#  when: hard_disks is defined
+- import_tasks: base_profile.yml
 
-- name: set hard_disks
-  set_fact:
-    hard_disks: "{{lookup('template','hard_disks.json.j2')}}"
+- import_tasks: raid_profile.yml
 
-#- name: _host_vars debug
-#  debug:
-#    msg: "{{_host_vars}}"
+- import_tasks: crypt_profile.yml
 
-- include: host_vars.yml
+- import_tasks: efi_filesystem.yml
+
+- import_tasks: filesystems.yml
+
+- import_tasks: swap_devices.yml
+
+- import_tasks: host_vars.yml

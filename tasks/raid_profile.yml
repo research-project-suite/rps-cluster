@@ -1,0 +1,19 @@
+---
+
+- name: set raid profile to mdraid if more than one disk and to single if one
+  set_fact:
+    partitioning_raid_profile: "{{ ( hard_disks | length > 1 ) | ternary('mirror','single') }}"
+  when: partitioning_raid_profile == 'auto'
+
+- name: load raid profile vars
+  include_vars:
+    file: "raid_profiles/{{partitioning_raid_profile}}.yml"
+    name: _partitioning_raid_profile
+
+- name: set raid profile vars
+  set_fact:
+    mdraid_devices: "{{_partitioning_raid_profile.mdraid_devices}}"
+    boot_device: "{{_partitioning_raid_profile.boot_device}}"
+    rescue_device: "{{_partitioning_raid_profile.rescue_device}}"
+    system_device: "{{_partitioning_raid_profile.system_device}}"
+    debian_boot_packages: "{{ debian_boot_packages | union(_partitioning_raid_profile.debian_boot_packages) }}"

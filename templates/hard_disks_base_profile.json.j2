@@ -1,0 +1,22 @@
+[
+{% for hd in hard_disks %}
+{% set first_device = (hard_disks | first) == hd %}
+{
+  "device": "{{hd.device}}",
+  "name": "{{hd.name}}",
+  "label_type": "{{ _partitioning_base_profile.label_type }}",
+  "partitions": [
+    {% if first_device and _partitioning_base_profile.partitions_first_device is defined %}
+    {% for part in _partitioning_base_profile.partitions_first_device %}
+    {{part}},
+    {% endfor %}
+    {% endif %}
+    {% if _partitioning_base_profile.partitions is defined %}
+    {% for part in _partitioning_base_profile.partitions %}
+    {{part}},
+    {% endfor %}
+    {% endif %} #}
+  ]
+},
+{% endfor %}
+]

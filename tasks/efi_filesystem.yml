@@ -1,0 +1,6 @@
+---
+
+- name: set efi file system
+  set_fact:
+    filesystems: "{{ filesystems | union(_efi_filesystems) }}"
+  when: partitioning_base_profile == 'efi'

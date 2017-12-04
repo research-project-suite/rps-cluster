@@ -1,222 +1,53 @@
-_host_vars_filename: partitioning
-_host_vars_default: {}
+_host_vars_filename:     partitioning
+_host_vars_default:      {}
 _host_vars:
-  hard_disks: "{{ hard_disks }}"
-  mdraid_devices: "{{ _mdraid_devices[partitioning_profile] }}"
-  dmcrypt_devices: "{{ _dmcrypt_devices[partitioning_profile] }}"
-  volume_groups: "{{ _volume_groups[partitioning_profile] }}"
-  logical_volumes: "{{ _logical_volumes[partitioning_profile] }}"
-  filesystems: "{{ _filesystems[partitioning_profile] }}"
-  swap_devices: "{{ _swap_devices[partitioning_profile] }}"
-  debian_boot_packages: "{{ _debian_boot_packages[partitioning_profile] | union(_debian_boot_packages_all) }}"
+  hard_disks:            "{{ hard_disks }}"
+  mdraid_devices:       "{{ mdraid_devices }}"
+  dmcrypt_devices:      "{{ dmcrypt_devices }}"
+  volume_groups:        "{{ volume_groups }}"
+  logical_volumes:      "{{ logical_volumes }}"
+  filesystems:          "{{ filesystems }}"
+  swap_devices:         "{{ swap_devices }}"
+  debian_boot_packages: "{{ debian_boot_packages }}"
 
-_debian_boot_packages_all:
+volume_groups:
+  - name: "{{primary_volume_group_name}}"
+    devices:
+      - "{{ system_device }}"
+
+logical_volumes:
+  - name: root
+    size: "{{root_partition_default_size}}"
+  - name: swap
+    size: "{{swap_partition_default_size}}"
+
+filesystems:
+  - device: "{{ boot_device }}"
+    mount_point: /boot
+    fstype: ext4
+  - device: "{{ rescue_device }}"
+    mount_point: /rescue
+    fstype: btrfs
+  - device: /dev/{{primary_volume_group_name}}/root
+    mount_point: /
+    fstype: btrfs
+
+_efi_partlabel: "{{inventory_hostname_short}}-efi"
+_efi_filesystems:
+  - device: /dev/disk/by-partlabel/{{_efi_partlabel}}
+    mount_point: /boot/efi
+    fstype: vfat
+
+swap_devices:
+  - device: /dev/{{primary_volume_group_name}}/swap
+
+debian_boot_packages:
   - linux-image-amd64
   - busybox-static
+  - e2fsprogs
+  - btrfs-tools
   - openssh-server
   - python
   - console-setup
   - acpi-support
   - bridge-utils
-
-_debian_boot_packages:
-  efi-dmcrypt-lvm:
-    - busybox-static
-    - lvm2
-    - cryptsetup
-    - btrfs-tools
-    - grub-efi-amd64
-    - efibootmgr
-  efi-mdraid-lvm:
-    - busybox-static
-    - mdadm
-    - lvm2
-    - btrfs-tools
-    - grub-efi-amd64
-    - efibootmgr
-  bios-mbr-dmcrypt-lvm:
-    - busybox-static
-    - lvm2
-    - cryptsetup
-    - btrfs-tools
-    - grub-pc
-  bios-gpt-mdraid-lvm:
-    - busybox-static
-    - mdadm
-    - lvm2
-    - btrfs-tools
-    - grub-pc
-
-_label_type:
-  efi-mdraid-lvm: gpt
-  efi-dmcrypt-lvm: gpt
-  bios-mbr-dmcrypt-lvm: msdos
-  bios-gpt-mdraid-lvm: gpt
-
-_dmcrypt_device_name: "{{inventory_hostname_short}}-crypt0"
-_volume_group_name: "{{inventory_hostname_short}}-vg0"
-_select_partlabel: "{{inventory_hostname_short}}-select"
-_efi_partlabel: "{{inventory_hostname_short}}-efi"
-
-_mdraid_devices:
-  bios-mbr-dmcrypt-lvm: []
-  efi-dmcrypt-lvm: []
-  bios-gpt-mdraid-lvm:
-    - device: /dev/md/vg0
-      devices: "{{ hard_disks | json_query(\"[].partitions[?mdraid=='vg0'][].name\") | map('regex_replace','(.*)','/dev/disk/by-partlabel/\\1')  | list }}"
-    - device: /dev/md/boot
-      devices: "{{ hard_disks | json_query(\"[].partitions[?mdraid=='boot'][].name\") | map('regex_replace','(.*)','/dev/disk/by-partlabel/\\1')  | list }}"
-    - device: /dev/md/rescue
-      devices: "{{ hard_disks | json_query(\"[].partitions[?mdraid=='rescue'][].name\") | map('regex_replace','(.*)','/dev/disk/by-partlabel/\\1')  | list }}"
-  efi-mdraid-lvm:
-    - device: /dev/md/vg0
-      devices: "{{ hard_disks | json_query(\"[].partitions[?mdraid=='vg0'][].name\") | map('regex_replace','(.*)','/dev/disk/by-partlabel/\\1')  | list }}"
-    - device: /dev/md/boot
-      devices: "{{ hard_disks | json_query(\"[].partitions[?mdraid=='boot'][].name\") | map('regex_replace','(.*)','/dev/disk/by-partlabel/\\1')  | list }}"
-    - device: /dev/md/rescue
-      devices: "{{ hard_disks | json_query(\"[].partitions[?mdraid=='rescue'][].name\") | map('regex_replace','(.*)','/dev/disk/by-partlabel/\\1')  | list }}"
-
-_dmcrypt_devices:
-  efi-mdraid-lvm: []
-  bios-gpt-mdraid-lvm: []
-  efi-dmcrypt-lvm:
-    - device: "{{ _crypt_device[partitioning_profile] }}"
-      name: "{{inventory_hostname}}-crypt0"
-      cipher: aes-xts-plain64
-      hash: sha512
-      key_size: 512
-_crypt_device:
-  #bios-dmcrypt-lvm: "{{ hard_disk_device }}-part4"
-  efi-dmcrypt-lvm: /dev/disk/by-partlabel/{{inventory_hostname}}-crypt
-  bios-gpt-mdraid-lvm: []
-
-_volume_groups:
-  bios-mbr-dmcrypt-lvm:
-    - name: "{{_volume_group_name}}"
-      devices:
-        - /dev/mapper/{{_dmcrypt_device_name}}
-  efi-dmcrypt-lvm:
-    - name: "{{_volume_group_name}}"
-      devices:
-        - /dev/mapper/{{_dmcrypt_device_name}}
-  bios-gpt-mdraid-lvm:
-    - name: "{{_volume_group_name}}"
-      devices:
-        - /dev/md/vg0
-  efi-mdraid-lvm:
-    - name: "{{_volume_group_name}}"
-      devices:
-        - /dev/md/vg0
-
-_logical_volumes_default:
-    - name: root
-      size: 32G
-      volume_group: "{{_volume_group_name}}"
-    - name: swap
-      size: 2G
-      volume_group: "{{_volume_group_name}}"
-    #- name: home
-    #  size: 100%FREE
-    #  volume_group: vg
-_logical_volumes:
-  bios-mbr-dmcrypt-lvm: "{{_logical_volumes_default}}"
-  efi-dmcrypt-lvm: "{{_logical_volumes_default}}"
-  bios-gpt-mdraid-lvm: "{{_logical_volumes_default}}"
-  efi-mdraid-lvm: "{{_logical_volumes_default}}"
-
-_fs_uuid_root:   "{{ lookup('pipe','uuid -v5 '+filesystem_uuid_namespace+' root') }}"
-_fs_uuid_boot:   "{{ lookup('pipe','uuid -v5 '+filesystem_uuid_namespace+' boot') }}"
-_fs_uuid_rescue: "{{ lookup('pipe','uuid -v5 '+filesystem_uuid_namespace+' rescue') }}"
-_fs_uuid_select: "{{ lookup('pipe','uuid -v5 '+filesystem_uuid_namespace+' select') }}"
-_fs_uuid_swap:   "{{ lookup('pipe','uuid -v5 '+filesystem_uuid_namespace+' swap') }}"
-
-
-_filesystems:
-  #bios-mbr-dmcrypt-lvm:
-  #  - device: /dev/vg/root
-  #    mount_point: /
-  #    fstype: btrfs
-  #    uuid: "{{ _fs_uuid_root }}"
-  #  - device: "{{ hard_disk_device }}-part2"
-  #    mount_point: /boot
-  #    fstype: btrfs
-  #    uuid: "{{ _fs_uuid_boot }}"
-  #  - device: "{{ hard_disk_device }}-part3"
-  #    mount_point: /boot/rescue
-  #    fstype: btrfs
-  #    uuid: "{{ _fs_uuid_rescue }}"
-  #  - device: "{{ hard_disk_device }}-part1"
-  #    mount_point: /boot/select
-  #    fstype: btrfs
-  #    uuid: "{{ _fs_uuid_select }}"
-  efi-dmcrypt-lvm:
-    - device: /dev/{{_volume_group_name}}/root
-      mount_point: /
-      fstype: btrfs
-      uuid: "{{ _fs_uuid_root }}"
-    - device: /dev/disk/by-partlabel/{{inventory_hostname}}-boot
-      mount_point: /boot
-      fstype: btrfs
-      uuid: "{{ _fs_uuid_boot }}"
-    - device: /dev/disk/by-partlabel/{{inventory_hostname}}-rescue
-      mount_point: /boot/rescue
-      fstype: btrfs
-      uuid: "{{ _fs_uuid_rescue }}"
-    - device: /dev/disk/by-partlabel/{{inventory_hostname}}-select
-      mount_point: /boot/select
-      fstype: btrfs
-      uuid: "{{ _fs_uuid_select }}"
-    - device: /dev/disk/by-partlabel/{{_efi_partlabel}}
-      mount_point: /boot/efi
-      fstype: vfat
-  bios-gpt-mdraid-lvm:
-    - device: /dev/{{_volume_group_name}}/root
-      mount_point: /
-      fstype: btrfs
-      uuid: "{{ _fs_uuid_root }}"
-    - device: /dev/md/boot
-      mount_point: /boot
-      fstype: btrfs
-      uuid: "{{ _fs_uuid_boot }}"
-    - device: /dev/md/rescue
-      mount_point: /boot/rescue
-      fstype: btrfs
-      uuid: "{{ _fs_uuid_rescue }}"
-    - device: /dev/disk/by-partlabel/{{_select_partlabel}}
-      mount_point: /boot/select
-      fstype: btrfs
-      uuid: "{{ _fs_uuid_select }}"
-  efi-mdraid-lvm:
-    - device: /dev/{{_volume_group_name}}/root
-      mount_point: /
-      fstype: btrfs
-      uuid: "{{ _fs_uuid_root }}"
-    - device: /dev/md/boot
-      mount_point: /boot
-      fstype: btrfs
-      uuid: "{{ _fs_uuid_boot }}"
-    - device: /dev/md/rescue
-      mount_point: /boot/rescue
-      fstype: btrfs
-      uuid: "{{ _fs_uuid_rescue }}"
-    - device: /dev/disk/by-partlabel/{{_select_partlabel}}
-      mount_point: /boot/select
-      fstype: btrfs
-      uuid: "{{ _fs_uuid_select }}"
-    - device: /dev/disk/by-partlabel/{{_efi_partlabel}}
-      mount_point: /boot/efi
-      fstype: vfat
-
-_swap_devices:
-  bios-mbr-dmcrypt-lvm:
-    - device: /dev/{{_volume_group_name}}/swap
-      uuid: "{{ _fs_uuid_swap }}"
-  efi-dmcrypt-lvm:
-    - device: /dev/{{_volume_group_name}}/swap
-      uuid: "{{ _fs_uuid_swap }}"
-  bios-gpt-mdraid-lvm:
-    - device: /dev/{{_volume_group_name}}/swap
-      uuid: "{{ _fs_uuid_swap }}"
-  efi-mdraid-lvm:
-    - device: /dev/{{_volume_group_name}}/swap
-      uuid: "{{ _fs_uuid_swap }}"

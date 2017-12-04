@@ -1,0 +1,18 @@
+label_type: msdos
+
+partitions:
+  - type: primary
+    start: 512MiB
+    end: 1GiB
+    usage: boot
+  - type: primary
+    start: 1GiB
+    end: 2GiB
+    usage: rescue
+  - type: primary
+    start: 2GiB
+    end: "{{last_partition_end}}"
+    usage: system
+
+debian_boot_packages:
+  - grub-pc

@@ -1,0 +1,8 @@
+[
+{% for swap in swap_devices %}
+{% if not swap.uuid is defined %}
+{% set swap = swap | combine({ 'uuid': _swap_devices_uuids.results[loop.index0].stdout }) %}
+{% endif %}
+{{swap|to_json}},
+{% endfor %}
+]

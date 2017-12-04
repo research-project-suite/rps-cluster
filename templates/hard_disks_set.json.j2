@@ -1,0 +1,39 @@
+[
+{% for hd in hard_disks %}
+{
+  "name": "{{hd.name}}",
+  "device": "{{hd.device}}",
+  "label_type": "{{ hd.label_type }}",
+  "partitions": [
+    {% for part in hd.partitions %}
+
+    {% if hd.label_type == 'gpt' %}
+
+      {% if not part.name is defined and ( part.prefix is defined or part.suffix is defined ) %}
+        {% set part = part | combine({ 'name': hd.name }) %}
+
+        {% if part.prefix is defined %}
+          {% set part = part | combine({ 'name': part.prefix+part.name }) %}
+        {% endif %}
+
+        {% if part.suffix is defined %}
+          {% set part = part | combine({ 'name': part.name+part.suffix }) %}
+        {% endif %}
+
+      {% endif %}
+
+      {% if part.name is defined and not part.device is defined %}
+        {% set part = part | combine({ 'device': '/dev/disk/by-partlabel/'+part.name }) %}
+      {% endif %}
+
+    {% elif hd.label_type == 'msdos' and not part.device is defined %}
+      {% set part = part | combine({ 'device': hd.device+(loop.index|string) }) %}
+    {% endif %}
+
+    {{part|to_json}},
+
+    {% endfor %}
+  ]
+},
+{% endfor %}
+]

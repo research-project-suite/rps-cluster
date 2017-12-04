@@ -1,0 +1,8 @@
+[
+{% for fs in filesystems %}
+{% if not fs.uuid is defined and fs.fstype != 'vfat' %}
+{% set fs = fs | combine({ 'uuid': _filesystems_uuids.results[loop.index0].stdout }) %}
+{% endif %}
+{{fs|to_json}},
+{% endfor %}
+]

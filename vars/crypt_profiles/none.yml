@@ -1,0 +1,5 @@
+dmcrypt_devices: []
+
+system_device: "{{ system_device }}"
+
+debian_boot_packages: []

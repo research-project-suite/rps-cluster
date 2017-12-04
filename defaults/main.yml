@@ -1,1 +1,12 @@
-partitioning_profile_last_partition_end: -1MiB
+partitioning_base_profile: bios-gpt
+partitioning_raid_profile: auto
+partitioning_crypt_profile: none
+
+hard_disks_scan: false
+
+last_partition_end: -1MiB
+
+primary_volume_group_name: "{{inventory_hostname_short}}-vg0"
+
+root_partition_default_size: 32G
+swap_partition_default_size: 2G

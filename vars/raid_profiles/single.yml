@@ -1,0 +1,7 @@
+mdraid_devices: []
+
+boot_device: "{{ hard_disks | json_query(\"[].partitions[?usage=='boot'][].device\") | first }}"
+rescue_device: "{{ hard_disks | json_query(\"[].partitions[?usage=='rescue'][].device\") | first }}"
+system_device: "{{ hard_disks | json_query(\"[].partitions[?usage=='system'][].device\") | first }}"
+
+debian_boot_packages: []
