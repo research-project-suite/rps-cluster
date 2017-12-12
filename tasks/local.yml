@@ -1,6 +1,6 @@
 ---
 
-- name: write ssh_known_hosts file
+- name: write local ssh_known_hosts file
   local_action: known_hosts
   args:
     path: "{{ lookup('env','HOME') }}/.ssh/known_hosts"

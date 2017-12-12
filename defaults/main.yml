@@ -4,4 +4,6 @@ ssh_host_key_types:
   - rsa
 ssh_ip: "{{ansible_host}}"
 ssh_host_key_state: configured
-ssh_scan_host: "{{inventory_hostname}}"
+ssh_scan_host: "{% if ssh_ip is defined %}{{ ssh_ip }}{% else %}{{inventory_hostname}}{% endif %}"
+
+ssh_update_local_known_hosts_file: true
