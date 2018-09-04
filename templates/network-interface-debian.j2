@@ -53,12 +53,22 @@ iface {{ dev }} inet6 static
 
 {% else %}
 
+{% if netifs[netif].type == "bridge" %}
+# bridge
+iface {{ dev }} inet manual
+{% if netifs[netif].devices is defined %}
+      bridge_ports {{ netifs[netif].devices | join(" ") }}
+{% else %}
+      bridge_ports none
+{% endif %}
+{% endif %}
+
 {% for ip in netifs[netif].ips %}
 {% if ip.ip | ipv6 %}
 # ipv6 {{ip.ip}}
 iface {{ dev }} inet6 static
       address   {{ ip.ip | ipv6('address') }}
-      netmask   {{ ip.ip | ipv6('netmask') }}
+      netmask   {{ ip.ip | ipv6('prefix') }}
 {% endif %}
 {% if ip.ip | ipv4 %}
 # ipv4 {{ip.ip}}

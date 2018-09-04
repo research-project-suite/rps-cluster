@@ -1,7 +1,7 @@
 [
 {% if netifs is defined %}
 {% for netif in netifs %}
-{% if netifs[netif].type == "ethernet" or ( netifs[netif].type == "virt" and virt_type=="qemu" )  %}
+{% if netifs[netif].type == "ethernet" or ( netifs[netif].type == "virt" and virt_type=="qemu" ) or netifs[netif].type == "bridge"  %}
 "{{netif}}",
 {% endif %}
 {% endfor %}
