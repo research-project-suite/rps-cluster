@@ -19,6 +19,7 @@ auto {{dev}}
 {% set virt_pointopoint_ips_ipv6 = hostvars[virt_host].netifs[netifs[netif].virt_host_netif] | json_query("ips[].ip") | ipv6("address") %}
 {% set virt_pointopoint_ips_ipv6_first = virt_pointopoint_ips_ipv6 | first %}
 {% set virt_pointopoint_ips_ipv6 = virt_pointopoint_ips_ipv6 | difference(virt_pointopoint_ips_ipv6_first) %}
+
 iface {{ dev }} inet static
       address {{ ips_ipv4_first }}
       netmask 255.255.255.255
@@ -28,22 +29,10 @@ iface {{ dev }} inet static
       post-up  /sbin/ip -family inet route add {{ ptpip }}/32 dev {{ dev }} via {{ virt_pointopoint_ips_ipv4_first }}
       pre-down /sbin/ip -family inet route del {{ ptpip }}/32 dev {{ dev }} via {{ virt_pointopoint_ips_ipv4_first }}
 {% endfor %}
-{% if netifs[netif].dns_resolvers is defined  and netifs[netif].dns_resolvers | ipv4 %}
-      dns-nameservers {{ netifs[netif].dns_resolvers | ipv4 | join(" ") }}
-{% endif %}
-{% if netifs[netif].dns_search is defined%}
-      dns-search {{ netifs[netif].dns_search | join(" ") }}
-{% endif %}
 {% for ip in ips_ipv4 %}
 iface {{ dev }} inet static
       address {{ ip }}
       netmask 32
-{% if netifs[netif].dns_resolvers is defined and netifs[netif].dns_resolvers | ipv4 %}
-      dns-nameservers {{ netifs[netif].dns_resolvers | ipv4 | join(" ") }}
-{% endif %}
-{% if netifs[netif].dns_search is defined %}
-      dns-search {{ netifs[netif].dns_search | join(" ") }}
-{% endif %}
 {% endfor %}
 iface {{ dev }} inet6 static
       address {{ ips_ipv6_first }}
@@ -55,23 +44,11 @@ iface {{ dev }} inet6 static
 {% for ptpip in virt_pointopoint_ips_ipv6 %}
       post-up  /sbin/ip -family inet6 route add {{ ptpip }} dev {{ dev }} via {{ virt_pointopoint_ips_ipv6_first }}
       pre-down /sbin/ip -family inet6 route del {{ ptpip }} dev {{ dev }} via {{ virt_pointopoint_ips_ipv6_first }}
-{% if netifs[netif].dns_resolvers is defined and netifs[netif].dns_resolvers | ipv6 %}
-      dns-nameservers {{ netifs[netif].dns_resolvers | ipv6 | join(" ") }}
-{% endif %}
-{% if netifs[netif].dns_search is defined %}
-      dns-search {{ netifs[netif].dns_search | join(" ") }}
-{% endif %}
 {% endfor %}
 {% for ip in ips_ipv6 %}
 iface {{ dev }} inet6 static
       address {{ ip }}
       netmask 128
-{% if netifs[netif].dns_resolvers is defined and netifs[netif].dns_resolvers | ipv6 %}
-      dns-nameservers {{ netifs[netif].dns_resolvers | ipv6 | join(" ") }}
-{% endif %}
-{% if netifs[netif].dns_search is defined %}
-      dns-search {{ netifs[netif].dns_search | join(" ") }}
-{% endif %}
 {% endfor %}
 
 {% else %}
@@ -82,12 +59,6 @@ iface {{ dev }} inet6 static
 iface {{ dev }} inet6 static
       address   {{ ip.ip | ipv6('address') }}
       netmask   {{ ip.ip | ipv6('netmask') }}
-{% if netifs[netif].dns_resolvers is defined and netifs[netif].dns_resolvers | ipv6 %}
-      dns-nameservers {{ netifs[netif].dns_resolvers | ipv6 | join(" ") }}
-{% endif %}
-{% if netifs[netif].dns_search is defined %}
-      dns-search {{ netifs[netif].dns_search | join(" ") }}
-{% endif %}
 {% endif %}
 {% if ip.ip | ipv4 %}
 # ipv4 {{ip.ip}}
@@ -100,13 +71,16 @@ iface {{ dev }} inet static
 {% set default_route = netifs[netif].routes | json_query("[?to=='default']") | first %}
       gateway {{default_route.via}}
 {% endif %}
-{% if netifs[netif].dns_resolvers is defined and netifs[netif].dns_resolvers | ipv4 %}
-      dns-nameservers {{ netifs[netif].dns_resolvers | ipv4 | join(" ") }}
-{% endif %}
-{% if netifs[netif].dns_search is defined %}
-      dns-search {{ netifs[netif].dns_search | join(" ") }}
-{% endif %}
 {% endif %}
 {% endfor %}
 
+{% endif %}
+
+# dns resolvers
+iface {{ dev }} inet manual
+{% if netifs[netif].dns_resolvers is defined %}
+      dns-nameservers {{ netifs[netif].dns_resolvers | join(" ") }}
+{% endif %}
+{% if netifs[netif].dns_search is defined%}
+      dns-search {{ netifs[netif].dns_search | join(" ") }}
 {% endif %}
