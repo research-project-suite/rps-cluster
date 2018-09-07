@@ -1,7 +1,9 @@
 ---
 
-- include_tasks: password.yml
+- import_tasks: password.yml
+  when: not root_target_directory is defined
 
-- include_tasks: ssh.yml
+- import_tasks: ssh.yml
 
-- include_tasks: fish.yml
+- import_tasks: fish.yml
+  when: not root_target_directory is defined
