@@ -9,37 +9,25 @@ auto {{dev}}
 # virt_pointopoint -> {{virt_host}} {{netifs[netif].virt_host_netif}}
 
 # ipv4
-{% set ips_ipv4 = netifs[netif] | json_query("ips[].ip") | ipv4("address") %}
-{% set ips_ipv4_first = ips_ipv4 | first %}
-{% set ips_ipv4 = ips_ipv4 | difference(ips_ipv4_first) %}
-{% set gateway4 = hostvars[virt_host].netifs[netifs[netif].virt_host_netif] | json_query("ips[].ip") | ipv4("address") | first %}
-
-iface {{ dev }} inet static
-      address {{ ips_ipv4_first }}
-      netmask 255.255.255.255
-      pointopoint {{ gateway4 }}
-      gateway {{ gateway4 }}
-
-{% for ip in ips_ipv4 %}
+{% for ip in netifs[netif] | json_query("ips[].ip") | ipv4("address") %}
 iface {{ dev }} inet static
       address {{ ip }}
       netmask 32
+{% if loop.index == 1 %}
+{% set gateway4 = hostvars[virt_host].netifs[netifs[netif].virt_host_netif] | json_query("ips[].ip") | ipv4("address") | first %}
+      pointopoint {{ gateway4 }}
+      gateway {{ gateway4 }}
+{% endif %}
 {% endfor %}
 
 # ipv6
-{% set ips_ipv6 = netifs[netif] | json_query("ips[].ip") | ipv6("address") %}
-{% set ips_ipv6_first = ips_ipv6 | first %}
-{% set ips_ipv6 = ips_ipv6 | difference(ips_ipv6_first) %}
-
-iface {{ dev }} inet6 static
-      address {{ ips_ipv6_first }}
-      netmask 128
-      gateway {{ hostvars[virt_host].netifs[netifs[netif].virt_host_netif].ll6 }}
-
-{% for ip in ips_ipv6 %}
+{% for ip in netifs[netif] | json_query("ips[].ip") | ipv6("address") %}
 iface {{ dev }} inet6 static
       address {{ ip }}
       netmask 128
+{% if loop.index == 1 %}
+      gateway {{ hostvars[virt_host].netifs[netifs[netif].virt_host_netif].ll6 }}
+{% endif %}
 {% endfor %}
 
 {% else %}
