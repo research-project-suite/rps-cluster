@@ -3,7 +3,8 @@
 
 ### netif {{netif}}
 {% set dev = netifs[netif].device | default( 'enx' + netifs[netif].mac | regex_replace(':') ) %}
-auto {{dev}}
+#auto {{dev}}
+allow-hotplug {{dev}}
 
 {% if netifs[netif].type == "virt_ptp" %}
 # virt_pointopoint -> {{virt_host}} {{netifs[netif].virt_host_netif}}
