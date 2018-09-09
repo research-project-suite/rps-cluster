@@ -69,8 +69,12 @@ iface {{ dev }} inet static
 # dns resolvers
 iface {{ dev }} inet manual
 {% if netifs[netif].dns_resolvers is defined %}
-      dns-nameservers {{ netifs[netif].dns_resolvers | join(" ") }}
+{% for nameserver in netifs[netif].dns_resolvers %}
+      dns-nameserver {{ nameserver }}
+{% endfor %}
 {% endif %}
 {% if netifs[netif].dns_search is defined%}
-      dns-search {{ netifs[netif].dns_search | join(" ") }}
+{% for search in netifs[netif].dns_search %}
+      dns-search {{ search }}
+{% endfor %}
 {% endif %}
