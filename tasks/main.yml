@@ -40,3 +40,16 @@
   with_items: "{{ _netifs }}"
   when:
     - ( root_target_dist | default('debian') ) == "debian"
+
+- name: systemd network dir
+  file:
+    path: "{{ root_target_directory | default('') }}/etc/systemd/network"
+    state: directory
+
+- name: systemd network interface names
+  template:
+    src: systemd-network.link.j2
+    dest: "{{ root_target_directory | default('') }}/etc/systemd/network/10-{{ item }}.link"
+  with_items: "{{ _netifs }}"
+  when:
+    - ( root_target_dist | default('debian') ) == "debian"
