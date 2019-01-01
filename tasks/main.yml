@@ -13,15 +13,14 @@
   pause:
     seconds: "{{ reboot_pause_seconds }}"
 
-- name: wait for ssh
-  local_action: wait_for
-  args:
-    host: "{{ ansible_host | default(inventory_hostname)  }}"
+- name: wait for ssh port
+  wait_for:
+    host: "{{ ansible_host | default(inventory_hostname) }}"
     port: 22
     search_regex: OpenSSH
-    delay: 0
     timeout: "{{ reboot_wait_timeout_seconds }}"
-    state: started
+  vars:
+    ansible_connection: local
 
 - include_role:
     name: ssh_host_key
