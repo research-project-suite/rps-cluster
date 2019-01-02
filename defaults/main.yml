@@ -1,7 +1,10 @@
 reboot_command: true
 
 reboot_command_after_seconds: 10
-reboot_pause_seconds: 120
-reboot_wait_timeout_seconds: 300
 
-reboot_uptime_max_seconds: "{{ reboot_pause_seconds - reboot_command_after_seconds + reboot_wait_timeout_seconds }}"
+reboot_pause_seconds: 60
+
+reboot_wait_for_ssh_close_timeout_seconds: 300
+reboot_wait_for_ssh_open_timeout_seconds: 300
+
+reboot_uptime_max_seconds: "{{ (_current_timestamp | int) - (_reboot_shutdown_timestamp | int) }}"
