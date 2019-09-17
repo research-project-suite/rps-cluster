@@ -1,8 +1,5 @@
 ---
 
-- setup:
-    gather_subset: "!all"
-
 - name: debian apt install packages
   apt:
     pkg: "{{ item }}"
@@ -19,29 +16,6 @@
   when:
     dmcrypt_devices_state == "closed"
 
-- name: ramdisk
-  mount:
-    src: ram
-    fstype: ramfs
-    name: /ram
-    state: mounted
-  when:
-    dmcrypt_devices_state == "formated" or
-    dmcrypt_devices_state == "wiped" or
-    dmcrypt_devices_state == "opened"
-
-- name: keyfile directory
-  file:
-    path: /ram/dmcrypt_devices/
-    owner: root
-    group: root
-    mode: 0700
-    state: directory
-  when:
-    dmcrypt_devices_state == "formated" or
-    dmcrypt_devices_state == "wiped" or
-    dmcrypt_devices_state == "opened"
-
 - name: shred device
   command: shred --iterations={{ dmcrypt_devices_shred_iterations }} {{ item.device }}
   with_items: "{{ dmcrypt_devices }}"
@@ -49,25 +23,17 @@
     dmcrypt_devices_state == "wiped" or
     dmcrypt_devices_state == "erased"
 
-
-- name: keyfile
-  copy:
-    content: "{{ item.key }}"
-    dest: /ram/dmcrypt_devices/{{ item.name }}
-  with_items: "{{ dmcrypt_devices }}"
-  when:
-    dmcrypt_devices_state == "formated" or
-    dmcrypt_devices_state == "wiped" or
-    dmcrypt_devices_state == "opened"
-
 - name: luksFormat
   command:
     cryptsetup luksFormat
+    --key-file=- --batch-mode
     --cipher {{ item.cipher }}
     --hash {{ item.hash }}
     --key-size {{ item.key_size }}
     {{ item.device }}
     /ram/dmcrypt_devices/{{ item.name }}
+  args:
+    stdin: "{{ item.key }}"
   with_items: "{{ dmcrypt_devices }}"
   when:
     dmcrypt_devices_state == "formated" or
@@ -76,29 +42,13 @@
 - name: open
   command:
     cryptsetup open --type luks
-    --key-file=/ram/dmcrypt_devices/{{ item.name }}
+    --key-file=- --batch-mode
     {{ item.discard | default(false) | ternary('--allow-discards','') }}
     {{ item.device }}
     {{ item.name }}
+  args:
+    stdin: "{{ item.key }}"
   with_items: "{{ dmcrypt_devices }}"
   when:
     dmcrypt_devices_state == "formated" or
-    dmcrypt_devices_state == "opened"
-
-- name: wipe keyfile
-  command: shred /ram/dmcrypt_devices/{{ item.name }}
-  with_items: "{{ dmcrypt_devices }}"
-  when:
-    dmcrypt_devices_state == "formated" or
-    dmcrypt_devices_state == "wiped" or
-    dmcrypt_devices_state == "opened"
-
-- name: remove keyfile
-  file:
-    path: /ram/dmcrypt_devices/{{ item.name }}
-    state: absent
-  with_items: "{{ dmcrypt_devices }}"
-  when:
-    dmcrypt_devices_state == "formated" or
-    dmcrypt_devices_state == "wiped" or
     dmcrypt_devices_state == "opened"
