@@ -16,3 +16,5 @@ pvremove -ff -y /dev/sd*
 vgchange -an
 wipefs --all /dev/sd*
 wipefs --all /dev/sd*
+blkdiscard /dev/sda & blkdiscard /dev/sdb &
+dd if=/dev/zero of=/dev/sdc bs=1G count=40 & dd if=/dev/zero of=/dev/sdd bs=1G count=40 &
