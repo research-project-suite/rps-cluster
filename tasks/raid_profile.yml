@@ -15,5 +15,5 @@
     mdraid_devices: "{{_partitioning_raid_profile.mdraid_devices}}"
     boot_device: "{{_partitioning_raid_profile.boot_device}}"
     rescue_device: "{{_partitioning_raid_profile.rescue_device}}"
-    system_device: "{{_partitioning_raid_profile.system_device}}"
+    data_device: "{{_partitioning_raid_profile.data_device}}"
     debian_boot_packages: "{{ debian_boot_packages | union(_partitioning_raid_profile.debian_boot_packages) }}"

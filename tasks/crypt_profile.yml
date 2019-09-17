@@ -8,5 +8,5 @@
 - name: set crypt profile vars
   set_fact:
     dmcrypt_devices: "{{_partitioning_crypt_profile.dmcrypt_devices}}"
-    system_device: "{{_partitioning_crypt_profile.system_device}}"
+    data_device: "{{_partitioning_crypt_profile.data_device}}"
     debian_boot_packages: "{{ debian_boot_packages | union(_partitioning_crypt_profile.debian_boot_packages) }}"

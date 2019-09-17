@@ -12,7 +12,7 @@ partitions:
   - type: primary
     start: 2GiB
     end: "{{last_partition_end}}"
-    usage: system
+    usage: data
 
 debian_boot_packages:
   - grub-pc

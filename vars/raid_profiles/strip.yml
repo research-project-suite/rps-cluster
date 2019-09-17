@@ -5,13 +5,13 @@ mdraid_devices:
   - device: /dev/md/rescue
     level: 1
     devices: "{{ hard_disks | json_query(\"[].partitions[?usage=='rescue'][].device\") | list }}"
-  - device: /dev/md/system
+  - device: /dev/md/data
     level: 0
-    devices: "{{ hard_disks | json_query(\"[].partitions[?usage=='system'][].device\") | list }}"
+    devices: "{{ hard_disks | json_query(\"[].partitions[?usage=='data'][].device\") | list }}"
 
 boot_device: /dev/md/boot
 rescue_device: /dev/md/rescue
-system_device: /dev/md/system
+data_device: /dev/md/data
 
 debian_boot_packages:
   - mdadm

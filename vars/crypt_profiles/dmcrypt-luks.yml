@@ -1,11 +1,11 @@
 dmcrypt_devices:
-  - device: "{{ system_device }}"
-    name: "{{inventory_hostname}}-crypt0"
+  - device: "{{ data_device }}"
+    name: "{{inventory_hostname_short}}-crypt0"
     cipher: aes-xts-plain64
     hash: sha512
-    key_size: 512
+    key_size: 256
 
-system_device: /dev/mapper/{{inventory_hostname}}-crypt0
+data_device: /dev/mapper/{{inventory_hostname_short}}-crypt0
 
 debian_boot_packages:
   - cryptsetup

@@ -2,7 +2,7 @@
 volume_groups:
   - name: "{{primary_volume_group_name}}"
     devices:
-      - "{{ system_device }}"
+      - "{{ data_device }}"
 
 logical_volumes:
   - name: root

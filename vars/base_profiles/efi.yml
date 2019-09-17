@@ -22,11 +22,11 @@ partitions:
     typecode: 8300
     usage: rescue
   - prefix: "{{inventory_hostname_short}}-"
-    suffix: -system
+    suffix: -data
     start: 2GiB
     end: "{{last_partition_end}}"
     typecode: 8300
-    usage: system
+    usage: data
 
 debian_boot_packages:
   - efibootmgr
