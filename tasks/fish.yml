@@ -23,9 +23,9 @@
     shell: /usr/bin/fish
   when: not root_target_directory is defined
 
-- name: fetch fish history
-  fetch:
-    src: /root/.local/share/fish/fish_history
-    dest: host_files
-  when: not root_target_directory is defined
-  failed_when: false
+# - name: fetch fish history
+#   fetch:
+#     src: /root/.local/share/fish/fish_history
+#     dest: host_files
+#   when: not root_target_directory is defined
+#   failed_when: false
