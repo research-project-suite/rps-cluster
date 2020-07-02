@@ -1,0 +1,85 @@
+---
+
+- import_role:
+    name: partitioning
+  when: hard_disks is defined
+
+- import_role:
+    name: mdraid_devices
+  vars:
+    mdraid_devices_state: created
+  when: mdraid_devices is defined
+
+- import_role:
+    name: dmcrypt_devices
+  vars:
+    dmcrypt_devices_state: formated
+  when: dmcrypt_devices is defined
+
+- import_role:
+    name: volume_groups
+  vars:
+    volume_groups_state: present
+  when: volume_groups is defined
+
+- import_role:
+    name: logical_volumes
+  vars:
+    logical_volumes_state: present
+  when: logical_volumes is defined
+
+- import_role:
+    name: filesystems
+  vars:
+    filesystems_state: formated
+
+- import_role:
+    name: swap_devices
+  vars:
+    swap_devices_state: formated
+
+- import_role:
+    name: debootstrap
+  vars:
+    debootstrap_include: "{{ debian_boot_packages }}"
+
+- import_role:
+    name: dmcrypt_crypttab
+  when: dmcrypt_devices is defined
+
+- import_role:
+    name: filesystems
+  vars:
+    filesystems_state: configured
+
+- import_role:
+    name: swap_devices
+  vars:
+    swap_devices_state: configured
+
+- import_role:
+    name: keyboard_configuration
+
+- import_role:
+    name: grub_bootloader
+
+- import_role:
+    name: network_interfaces
+
+- import_role:
+    name: root_user
+
+- import_role:
+    name: ssh_host_key
+  vars:
+    ssh_host_key_state: fetched
+
+- import_role:
+    name: filesystems
+  vars:
+    filesystems_state: unmounted
+
+- import_role:
+    name: reboot
+  vars:
+    ssh_host_key_state: saved
