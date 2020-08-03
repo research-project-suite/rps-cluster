@@ -1,0 +1,21 @@
+{{ ansible_managed | comment }}
+
+# interfaces(5) file used by ifup(8) and ifdown(8)
+
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+  address {{hetzner_server_main_ip}}
+  netmask 32
+  gateway {{hetzner_server_gateway}}
+  pointopoint {{hetzner_server_gateway}}
+
+iface eth0 inet6 static
+  address {{hetzner_server_main_ipv6}}
+  netmask 128
+  gateway fe80::1
+
+# Include files from /etc/network/interfaces.d:
+source-directory /etc/network/interfaces.d

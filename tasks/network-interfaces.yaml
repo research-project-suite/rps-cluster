@@ -1,0 +1,22 @@
+---
+
+- name: /etc/network directory
+  file:
+    path: "{{ root_target_directory | default('') }}/etc/network"
+    state: directory
+
+- name: network interfaces configuration
+  template:
+    src: profiles/{{network_interfaces_profile}}.j2
+    dest: "{{ root_target_directory | default('') }}/etc/network/interfaces"
+
+- name: /etc/network/interfaces.d directory
+  file:
+    path: "{{ root_target_directory | default('') }}/etc/network/interfaces.d"
+    state: directory
+
+# - name: debian network interface configuration
+#   template:
+#     src: network-interface.j2
+#     dest: "{{ root_target_directory | default('') }}/etc/network/interfaces.d/{{ item }}"
+#   with_items: "{{ _netifs }}"

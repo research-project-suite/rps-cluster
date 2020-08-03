@@ -1,7 +1,0 @@
-{{ ansible_managed | comment }}
-{% set netif = item %}
-{% set dev = netifs[netif].device | default( 'enx' + netifs[netif].mac | regex_replace(':') ) %}
-[Match]
-MACAddress={{netifs[netif].mac}}
-[Link]
-Name={{dev}}

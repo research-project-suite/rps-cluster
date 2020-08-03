@@ -1,9 +1,0 @@
-[
-{% if netifs is defined %}
-{% for netif in netifs %}
-{% if netifs[netif].type == "ethernet" or netifs[netif].type == "virt" or netifs[netif].type == "virt_ptp" or netifs[netif].type == "virt_bridge" or netifs[netif].type == "bridge"  %}
-"{{netif}}",
-{% endif %}
-{% endfor %}
-{% endif %}
-]
