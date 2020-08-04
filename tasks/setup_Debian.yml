@@ -2,7 +2,5 @@
 
 - name: apt packages installed
   apt:
-    pkg: "{{ item }}"
-    state: installed
-  with_items:
-    - parted
+    pkg:
+      - parted
