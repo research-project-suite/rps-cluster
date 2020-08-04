@@ -1,31 +1,29 @@
 ---
-- include_role:
-    name: chroot_environment
-  vars:
-    chroot_environment_state: mounted
-  when: root_target_directory is defined
+
+- name: debian packages
+  apt:
+    pkg:
+      - arch-install-scripts
 
 - name: default grub settings
   template:
     src: default-grub.j2
-    dest: "{{ root_target_directory }}/etc/default/grub"
+    dest: "{{ root_target_directory | default('') }}/etc/default/grub"
 
 - name: grub-install
-  command:
-    chroot {{ root_target_directory }}
+  command: >
+    {% if root_target_directory is defined %}arch-chroot {{ root_target_directory }}{% endif %}
     grub-install
-    {{ lookup('template','grub-install.args.j2') }} 
+    {{ lookup('template','grub-install.args.j2') }}
     {{ item }}
   with_items: "{{ boot_devices }}"
 
 - name: update-grub
-  command: chroot {{ root_target_directory }} update-grub
+  command: >
+    {% if root_target_directory is defined %}arch-chroot {{ root_target_directory }}{% endif %}
+    update-grub
 
 - name: update initramfs
-  command: chroot {{ root_target_directory }} update-initramfs -u
-
-- include_role:
-    name: chroot_environment
-  vars:
-    chroot_environment_state: unmounted
-  when: root_target_directory is defined
+  command: >
+    {% if root_target_directory is defined %}arch-chroot {{ root_target_directory }}{% endif %}
+    update-initramfs -u

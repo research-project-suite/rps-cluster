@@ -1,3 +1,4 @@
+cmdline: ""
 grub_cmdline_linux: "{{ cmdline }}"
 grub_cmdline_linux_default: quiet {{ cmdline }}
 grub_disable_recovery: false
