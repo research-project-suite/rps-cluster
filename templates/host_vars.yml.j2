@@ -1,1 +1,0 @@
-{% if ("host_vars/"+inventory_hostname+'/'+_host_vars_filename+'.yml') | is_file %}{{ _host_vars_default | combine( lookup('file','host_vars/'+inventory_hostname+'/'+_host_vars_filename+'.yml') | from_yaml ) | combine( _host_vars | to_json | from_json ) | to_nice_yaml }}{% else %}{{ _host_vars_default | combine( _host_vars | to_json | from_json ) | to_nice_yaml }}{% endif %}

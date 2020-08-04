@@ -33,9 +33,8 @@ debian_boot_packages:
   - busybox-static
   - lvm2
   - e2fsprogs
-  - btrfs-tools
+  - btrfs-progs
   - openssh-server
   - python
   - console-setup
   - acpi-support
-  - bridge-utils

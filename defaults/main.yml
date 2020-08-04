@@ -1,5 +1,5 @@
 partitioning_base_profile: bios-gpt
-partitioning_raid_profile: auto
+partitioning_raid_profile: "{{ ( hard_disks | length > 1 ) | ternary('mirror','single') }}"
 partitioning_crypt_profile: none
 
 hard_disks_scan: false

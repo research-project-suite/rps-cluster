@@ -1,10 +1,5 @@
 ---
 
-- name: set raid profile to mdraid if more than one disk and to single if one
-  set_fact:
-    partitioning_raid_profile: "{{ ( hard_disks | length > 1 ) | ternary('mirror','single') }}"
-  when: partitioning_raid_profile == 'auto'
-
 - name: load raid profile vars
   include_vars:
     file: "raid_profiles/{{partitioning_raid_profile}}.yml"

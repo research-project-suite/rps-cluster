@@ -9,8 +9,8 @@
 - name: host_vars file
   local_action: template
   args:
-    src: host_vars.yml.j2
-    dest: "{{ playbook_dir }}/host_vars/{{inventory_hostname}}/{{_host_vars_filename}}.yml"
+    src: host_vars.yaml.j2
+    dest: "{{ playbook_dir }}/host_vars/{{inventory_hostname}}/{{_host_vars_filename}}.yaml"
 
 - name: include host_vars
   include_vars:
