@@ -40,7 +40,7 @@
     ansible_connection: local
   register: _reboot_wait_for_ssh_port_open
 
-- include_role:
+- import_role:
     name: ssh_host_key
 
 - name: try to connect to ssh
