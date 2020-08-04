@@ -2,10 +2,8 @@
 
 - name: debian apt install packages
   apt:
-    pkg: "{{ item }}"
-    state: installed
-  with_items:
-    - cryptsetup
+    pkg:
+      - cryptsetup
   when: ansible_os_family == "Debian"
 
 - name: close
@@ -36,8 +34,9 @@
     stdin: "{{ item.key }}"
   with_items: "{{ dmcrypt_devices }}"
   when:
-    dmcrypt_devices_state == "formated" or
-    dmcrypt_devices_state == "wiped"
+    - dmcrypt_devices_state == "formated" or
+      dmcrypt_devices_state == "wiped"
+    - item.luks | default(true)
 
 - name: open
   command:
@@ -50,5 +49,6 @@
     stdin: "{{ item.key }}"
   with_items: "{{ dmcrypt_devices }}"
   when:
-    dmcrypt_devices_state == "formated" or
-    dmcrypt_devices_state == "opened"
+    - dmcrypt_devices_state == "formated" or
+      dmcrypt_devices_state == "opened"
+    - item.luks | default(true)
