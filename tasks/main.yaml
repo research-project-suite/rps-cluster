@@ -1,10 +1,6 @@
 ---
 
-- include: debian.yml
-  when: ansible_os_family == "Debian"
-
-- include: gentoo.yml
-  when: ansible_os_family == "Gentoo"
+- include: setup_{{ansible_os_family}}.yaml
 
 #- name: debootstrap download
 #  command:
