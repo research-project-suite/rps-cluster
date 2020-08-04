@@ -2,12 +2,10 @@
 
 - name: install debian packages
   apt:
-    pkg: "{{item}}"
-    state: installed
+    pkg:
+      - btrfs-tools
+      - dosfstools
   when: ansible_os_family == "Debian"
-  with_items:
-    - btrfs-tools
-    - dosfstools
 
 - name: unmount filesystems
   mount:
