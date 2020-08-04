@@ -5,10 +5,8 @@
 
 - name: debian apt install packages
   apt:
-    pkg: "{{ item }}"
-    state: installed
-  with_items:
-    - lvm2
+    pkg:
+      - lvm2
   when: ansible_os_family == "Debian"
 
 - name: logical volumes
