@@ -13,7 +13,7 @@ iface eth0 inet static
   pointopoint {{hetzner_server_gateway}}
 
 iface eth0 inet6 static
-  address {{hetzner_server_main_ipv6}}
+  address {{ hetzner_server_ipv6_subnet | ipaddr('1') | ipv6('address') }}
   netmask 128
   gateway fe80::1
 
