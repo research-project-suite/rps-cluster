@@ -15,8 +15,7 @@
 #    creates: "{{debootstrap_tarball}}"
 
 - name: debootstrap
-  command:
-    debootstrap
+  command: debootstrap
     {{debootstrap_args}}
     {{debootstrap_suite}}
     {{root_target_directory}}
