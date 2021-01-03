@@ -10,11 +10,17 @@ vgchange -an
 wipefs --all /dev/md*
 mdadm --stop /dev/md*
 mdadm --zero-superblock /dev/sd*
+mdadm --zero-superblock /dev/nvme*
 mdadm --stop /dev/md*
 vgchange -an
 pvremove -ff -y /dev/sd*
+pvremove -ff -y /dev/nvme*
 vgchange -an
 wipefs --all /dev/sd*
 wipefs --all /dev/sd*
-blkdiscard /dev/sda & blkdiscard /dev/sdb &
-dd if=/dev/zero of=/dev/sdc bs=1G count=40 & dd if=/dev/zero of=/dev/sdd bs=1G count=40 &
+wipefs --all /dev/nvme*
+wipefs --all /dev/nvme*
+blkdiscard /dev/nvme0n1
+blkdiscard /dev/nvme1n1
+#blkdiscard /dev/sda & blkdiscard /dev/sdb &
+#dd if=/dev/zero of=/dev/sdc bs=1G count=40 & dd if=/dev/zero of=/dev/sdd bs=1G count=40 &
