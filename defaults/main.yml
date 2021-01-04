@@ -2,7 +2,6 @@ ssh_host_key_types:
   - ed25519
   - ecdsa
   - rsa
-ssh_ip: "{{ansible_host}}"
 ssh_host_key_state: configured
 ssh_scan_host: "{% if ssh_ip is defined %}{{ ssh_ip }}{% else %}{{inventory_hostname}}{% endif %}"
 

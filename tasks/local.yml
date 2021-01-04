@@ -4,8 +4,7 @@
   local_action: known_hosts
   args:
     path: "{{ lookup('env','HOME') }}/.ssh/known_hosts"
-    name: "{{ item }}"
+    name: "{{ inventory_hostname }}"
     key: "{{ lookup('template','ssh_host_key.j2') }}"
-  with_items: "{{play_hosts}}"
-  when: hostvars[item].ssh_host_key_ed25519_public is defined
-  run_once: true
+  when: ssh_host_key_ed25519_public is defined
+  throttle: 1

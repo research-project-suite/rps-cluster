@@ -1,5 +1,5 @@
-{% if hostvars[item].ssh_ip is defined %}
-{{ item }},{{ ansible_host }},{{ hostvars[item].ssh_ip }} ssh-ed25519 {{ hostvars[item].ssh_host_key_ed25519_public }}
+{% if ssh_ip is defined %}
+{{ inventory_hostname }},{{ ssh_ip }} ssh-ed25519 {{ ssh_host_key_ed25519_public }}
 {% else %}
-{{ item }},{{ ansible_host }} ssh-ed25519 {{ hostvars[item].ssh_host_key_ed25519_public }}
+{{ inventory_hostname }},{{ ansible_host }} ssh-ed25519 {{ ssh_host_key_ed25519_public }}
 {% endif %}
