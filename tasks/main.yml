@@ -3,7 +3,7 @@
 - name: install debian packages
   apt:
     pkg:
-      - btrfs-tools
+      - btrfs-progs
       - dosfstools
   when: ansible_os_family == "Debian"
 
