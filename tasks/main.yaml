@@ -1,6 +1,6 @@
 ---
 
-- include: setup_{{ansible_os_family}}.yaml
+- include_tasks: setup_{{ansible_os_family}}.yaml
 
 #- name: debootstrap download
 #  command:
