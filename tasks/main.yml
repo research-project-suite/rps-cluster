@@ -20,7 +20,7 @@
   filesystem:
     fstype: "{{ item.fstype }}"
     dev: "{{ item.device }}"
-    opts: -U {{ item.uuid }}
+    opts: "{% if item.uuid is defined %}-U {{ item.uuid }}{% endif %}"
     force: "{{ filesystems_state == 'formated' }}"
   with_items: "{{ filesystems }}"
   when:
