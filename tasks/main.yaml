@@ -40,3 +40,6 @@
     executable: /bin/bash
   failed_when: false
   when: REALLY_PURGE_HARDDISKS_WHICH_WILL_DESTROY_EVERYTHING_ON_YOUR_HARDDISKS_I_KNOW_WHAT_I_AM_DOING|bool
+
+- name: wait for io sync
+  command: sync
