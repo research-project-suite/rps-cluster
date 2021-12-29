@@ -1,0 +1,42 @@
+---
+
+- name: assert that the user has confirmed the purge
+  assert:
+    that: "{{REALLY_PURGE_HARDDISKS_WHICH_WILL_DESTROY_EVERYTHING_ON_YOUR_HARDDISKS_I_KNOW_WHAT_I_AM_DOING|bool}}"
+
+- name: ensure required debian packages are present
+  apt:
+    pkg:
+      - util-linux
+      - lsof
+
+- block:
+    - import_tasks: clean-target.yaml
+    - import_tasks: deactivate-lvm.yaml
+  when: REALLY_PURGE_HARDDISKS_WHICH_WILL_DESTROY_EVERYTHING_ON_YOUR_HARDDISKS_I_KNOW_WHAT_I_AM_DOING|bool
+
+- name: purge hard disks
+  shell: |
+    wipefs --all /dev/dm-*
+    vgchange -an
+    pvremove -ff -y /dev/md*
+    vgchange -an
+    wipefs --all /dev/md*
+    mdadm --stop /dev/md*
+    mdadm --zero-superblock /dev/sd*
+    mdadm --zero-superblock /dev/nvme*
+    mdadm --stop /dev/md*
+    vgchange -an
+    pvremove -ff -y /dev/sd*
+    pvremove -ff -y /dev/nvme*
+    vgchange -an
+    wipefs --all /dev/sd*
+    wipefs --all /dev/sd*
+    wipefs --all /dev/nvme*
+    wipefs --all /dev/nvme*
+    blkdiscard /dev/nvme0n1
+    blkdiscard /dev/nvme1n1
+  args:
+    executable: /bin/bash
+  failed_when: false
+  when: REALLY_PURGE_HARDDISKS_WHICH_WILL_DESTROY_EVERYTHING_ON_YOUR_HARDDISKS_I_KNOW_WHAT_I_AM_DOING|bool

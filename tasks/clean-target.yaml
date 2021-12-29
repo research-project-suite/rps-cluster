@@ -1,0 +1,19 @@
+---
+
+- name: get processes using /target
+  command: lsof -t {{item}}
+  register: get_target_processes
+  loop: "{{ remaining_target_mounts }}"
+  failed_when: false
+  changed_when: false
+
+- name: kill every process still running in /target
+  command: kill -KILL {{item}}
+  loop: "{{ get_target_processes | json_query(\"results[].stdout_lines|[]\") | unique }}"
+  failed_when: false
+
+- name: unmount /target filesystems
+  mount:
+    path: "{{item}}"
+    state: unmounted
+  loop: "{{ remaining_target_mounts }}"
