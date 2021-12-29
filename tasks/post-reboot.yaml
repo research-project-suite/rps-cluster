@@ -1,0 +1,13 @@
+---
+
+- import_role:
+    name: ssh_host_key
+
+- name: try to connect to ssh
+  setup:
+
+- name: assert realistic uptime for successful reboot
+  assert:
+    that: (ansible_uptime_seconds | int) <= (reboot_uptime_max_seconds | int)
+    msg: reboot might not have happened because of unplausible uptime of {{ansible_uptime_seconds}} seconds is higher than the expected {{reboot_uptime_max_seconds}} seconds
+  when: _reboot_shutdown_timestamp is defined

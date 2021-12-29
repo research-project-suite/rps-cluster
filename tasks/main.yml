@@ -1,52 +1,13 @@
 ---
 
-- name: reboot
-  command:
-    systemd-run --on-active={{reboot_command_after_seconds}}
-    shutdown -r now "Reboot triggered by Ansible script"
-  #async: 1
-  #poll: 0
-  #ignore_errors: true
-  when: reboot_command
-
-- name: wait for ssh port to be closed
-  wait_for:
-    host: "{{ ansible_host | default(inventory_hostname) }}"
-    port: 22
-    search_regex: OpenSSH
-    timeout: "{{ reboot_wait_for_ssh_close_timeout_seconds }}"
-    state: absent
+- import_tasks: pre-reboot.yaml
   vars:
-    ansible_connection: local
-  register: _reboot_wait_for_ssh_port_closed
+    ansible_host: "{{ssh_host_pre_reboot}}"
+    ssh_host: "{{ ssh_host_pre_reboot }}"
 
-- name: note the shutdown time
-  set_fact:
-    _reboot_shutdown_timestamp: "{{ _current_timestamp }}"
+- import_tasks: wait-and-pause.yaml
 
-- name: pause to let host reboot
-  pause:
-    seconds: "{{ reboot_pause_seconds }}"
-  register: _reboot_pause
-
-- name: wait for ssh port to be open again
-  wait_for:
-    host: "{{ ansible_host | default(inventory_hostname) }}"
-    port: 22
-    search_regex: OpenSSH
-    timeout: "{{ reboot_wait_for_ssh_open_timeout_seconds }}"
-    state: present
+- import_tasks: post-reboot.yaml
   vars:
-    ansible_connection: local
-  register: _reboot_wait_for_ssh_port_open
-
-- import_role:
-    name: ssh_host_key
-
-- name: try to connect to ssh
-  setup:
-
-- name: check uptime for successful reboot
-  set_fact:
-    reboot_uptime: "{{ ansible_uptime_seconds }}"
-  failed_when: ansible_uptime_seconds > reboot_uptime_max_seconds
+    ansible_host: "{{ssh_host_post_reboot}}"
+    ssh_host: "{{ ssh_host_post_reboot }}"

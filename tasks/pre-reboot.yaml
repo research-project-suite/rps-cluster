@@ -1,0 +1,10 @@
+---
+
+- name: reboot
+  command:
+    systemd-run --on-active={{reboot_command_after_seconds}}
+    shutdown -r now "Reboot triggered by Ansible script"
+  #async: 1
+  #poll: 0
+  #ignore_errors: true
+  when: reboot_command
