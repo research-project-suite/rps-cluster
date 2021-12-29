@@ -17,3 +17,4 @@
     path: "{{item}}"
     state: unmounted
   loop: "{{ remaining_target_mounts }}"
+  failed_when: false
