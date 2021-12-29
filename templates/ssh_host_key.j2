@@ -1,5 +1,0 @@
-{% if ssh_ip is defined %}
-{{ inventory_hostname }},{{ ssh_ip }} ssh-ed25519 {{ ssh_host_key_ed25519_public }}
-{% else %}
-{{ inventory_hostname }},{{ ansible_host }} ssh-ed25519 {{ ssh_host_key_ed25519_public }}
-{% endif %}

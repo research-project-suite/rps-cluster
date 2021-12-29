@@ -1,7 +1,7 @@
 ---
 
 - name: scan ssh host
-  local_action: command ssh-keyscan -t ed25519 {{ssh_scan_host}}
+  local_action: command ssh-keyscan -t ed25519 {{ssh_host}}
   register: _ssh_keyscan_result
   changed_when: false
 
