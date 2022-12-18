@@ -11,6 +11,7 @@
     key: lxd_clustered_servers
 
 - when:
+  - lxd_cluster_bootstrap
   - not 'lxd_clustered_servers' in groups
   - not ansible_local.lxd_info.environment.server_clustered
   run_once: true
@@ -18,7 +19,6 @@
   command: lxd init --preseed
   args:
     stdin: "{{lxd_preseed|combine({'cluster':lxd_cluster_bootstrap_config})}}"
-  register: lxd_bootstrap_cluster_task
 
 - name: Gathering Facts again after lxd bootstraping
   setup:
@@ -50,7 +50,6 @@
   #       lxd_cluster_token: "{{lxd_cluster_token}}"
 
   - name: lxd join cluster
-    when: not lxd_cluster_bootstrap
     command: lxd init --preseed
     args:
       stdin: "{{lxd_preseed|combine({'cluster':lxd_cluster_join_config})}}"
