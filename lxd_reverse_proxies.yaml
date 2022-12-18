@@ -1,0 +1,4 @@
+---
+
+- hosts: lxd_reverse_proxies
+  become: true

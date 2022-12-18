@@ -1,0 +1,6 @@
+---
+
+- hosts: lxd_cluster_nodes
+  become: true
+  roles:
+  - name: lxd_server

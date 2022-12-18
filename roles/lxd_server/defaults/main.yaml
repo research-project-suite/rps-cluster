@@ -1,0 +1,8 @@
+---
+
+lxd_server_name: "{{inventory_hostname}}"
+lxd_cluster_server_name: "{{inventory_hostname_short}}"
+
+lxd_ipv6_nat: true
+lxd_ipv4_nat: true
+lxd_default_storage_pool_driver: dir

@@ -1,0 +1,27 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+  - name: update debian cache and upgrade packages
+    apt:
+      update_cache: true
+      upgrade: full
+  - name: debian packages
+    apt:
+      pkg:
+      - kitty-terminfo
+  
+- import_playbook: lxd_cluster_nodes.yaml
+
+- hosts: lxd_cluster_nodes
+  become: true
+  gather_facts: false
+  tasks:
+  - name: add vagrant user to lxd group
+    user:
+      name: vagrant
+      groups:
+      - lxd
+
+- import_playbook: lxd_reverse_proxies.yaml
