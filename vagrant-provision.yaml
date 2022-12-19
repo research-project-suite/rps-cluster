@@ -12,9 +12,9 @@
       pkg:
       - kitty-terminfo
   
-- import_playbook: lxd_cluster_nodes.yaml
+- import_playbook: lxd_servers.yaml
 
-- hosts: lxd_cluster_nodes
+- hosts: lxd_servers
   become: true
   gather_facts: false
   tasks:
@@ -23,5 +23,3 @@
       name: vagrant
       groups:
       - lxd
-
-- import_playbook: lxd_reverse_proxies.yaml

@@ -1,6 +1,6 @@
 ---
 
-- hosts: lxd_cluster_nodes
+- hosts: lxd_servers
   become: true
   roles:
   - name: lxd_server

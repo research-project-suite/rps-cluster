@@ -14,6 +14,7 @@
     - apparmor
     - dnsmasq-base
     - python3-yaml
+    - criu
 
 - name: ansible facts directory
   file:

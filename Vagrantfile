@@ -7,23 +7,6 @@ Vagrant.configure(2) do |config|
   config.vm.define "node1" do |node|
     node.vm.hostname = "node1"
     node.vm.network "private_network", ip: "192.168.59.11"
-    # node.vm.provision "ansible" do |ansible|
-    #   ansible.compatibility_mode = "2.0"
-    #   ansible.playbook = "vagrant-provision.yaml"
-    #   ansible.groups = {
-    #     "lxd_cluster_nodes" => [
-    #       "node1",
-    #     ],
-    #   }
-    #   ansible.host_vars = {
-    #     "node1" => {
-    #       "lxd_server_name" => "192.168.59.11",
-    #     },
-    #   }
-    #   # ansible.extra_vars = {
-    #   #   lxd_cluster_bootstrap: true,
-    #   # }
-    # end
   end
 
   config.vm.define "node2" do |node|
@@ -33,22 +16,16 @@ Vagrant.configure(2) do |config|
   config.vm.define "node3" do |node|
     node.vm.hostname = "node3"
     node.vm.network "private_network", ip: "192.168.59.13"
-  end
-
-  config.vm.define "rpx" do |rpx|
-    rpx.vm.hostname = "rpx"
-    rpx.vm.network "private_network", ip: "192.168.59.7"
-    rpx.vm.provision "ansible" do |ansible|
+    node.vm.provision "ansible" do |ansible|
       ansible.limit = 'all'
       ansible.compatibility_mode = "2.0"
       ansible.playbook = "vagrant-provision.yaml"
       ansible.groups = {
-        "lxd_cluster_nodes" => [
+        "lxd_servers" => [
           "node1",
           "node2",
           "node3",
         ],
-        "lxd_reverse_proxies" => ["rpx"],
       }
       ansible.host_vars = {
         "node1" => {
