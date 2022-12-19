@@ -8,7 +8,6 @@ Vagrant.configure(2) do |config|
     node.vm.hostname = "node1"
     node.vm.network "private_network", ip: "192.168.59.11"
   end
-
   config.vm.define "node2" do |node|
     node.vm.hostname = "node2"
     node.vm.network "private_network", ip: "192.168.59.12"
@@ -16,6 +15,7 @@ Vagrant.configure(2) do |config|
   config.vm.define "node3" do |node|
     node.vm.hostname = "node3"
     node.vm.network "private_network", ip: "192.168.59.13"
+
     node.vm.provision "ansible" do |ansible|
       ansible.limit = 'all'
       ansible.compatibility_mode = "2.0"
@@ -37,6 +37,9 @@ Vagrant.configure(2) do |config|
         "node3" => {
           "lxd_server_name" => "192.168.59.13",
         },
+      }
+      ansible.extra_vars = {
+        lxd_cluster_bootstrap: true,
       }
     end
   end
