@@ -1,0 +1,12 @@
+---
+
+- name: gentoo package.accept_keywords
+  copy:
+    src: gentoo-package.accept_keywords
+    dest: /etc/portage/package.accept_keywords
+
+- name: gentoo portage install packages
+  portage: package={{item}} state=installed
+  with_items:
+    - dev-util/debootstrap
+    - app-crypt/debian-archive-keyring

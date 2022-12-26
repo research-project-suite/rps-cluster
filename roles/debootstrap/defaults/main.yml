@@ -1,0 +1,10 @@
+debian_mirror: http://deb.debian.org/debian
+debian_distribution: bullseye
+debian_components:
+  - main
+  - contrib
+  - non-free
+
+debootstrap_suite: "{{ debian_distribution }}"
+debootstrap_components: "{{ debian_components }}"
+debootstrap_arch: amd64

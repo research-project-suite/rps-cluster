@@ -1,0 +1,22 @@
+---
+
+- include_tasks: setup_{{ansible_os_family}}.yaml
+
+#- name: debootstrap download
+#  command:
+#    debootstrap
+#    --download-only
+#    --make-tarball={{debootstrap_tarball}}
+#    {{debootstrap_args}}
+#    {{debootstrap_suite}}
+#    {{debootstrap_download_directory}}
+#    {{debian_mirror}}
+#  args:
+#    creates: "{{debootstrap_tarball}}"
+
+- name: debootstrap
+  command: debootstrap
+    {{debootstrap_args}}
+    {{debootstrap_suite}}
+    {{root_target_directory}}
+    {{debian_mirror}}

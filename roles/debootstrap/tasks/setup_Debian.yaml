@@ -1,0 +1,6 @@
+---
+
+- name: debian packages installed
+  apt:
+    pkg:
+      - debootstrap
