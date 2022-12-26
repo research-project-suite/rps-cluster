@@ -1,0 +1,49 @@
+---
+
+- include: setup_Debian.yml
+
+#- name: mdadm detail scan
+#  command: mdadm --detail --scan {{ item.device }}
+#  register: _mdadm_detail_scan_output
+#  with_items: "{{ mdraid_devices }}"
+#  failed_when: false
+#  changed_when: false
+#
+#- debug: msg={{_mdadm_detail_scan_output}}
+#
+#- name: set state
+
+#- name: blkid
+#  command: blkid
+#  register: blkid
+
+#- name: set devices
+#  set_fact: mdraid_devices={{ _mdraid_devices }}
+
+- name: stop
+  command:
+    mdadm --stop
+    {{ item.devices | join(" ")  }}
+  with_items: "{{ mdraid_devices }}"
+  when:
+    mdraid_devices_state == "stopped"
+
+- name: zero superblock
+  command:
+    mdadm --zero-superblock
+    {{ item.devices | join(" ")  }}
+  with_items: "{{ mdraid_devices }}"
+  when:
+    mdraid_devices_state == "created"
+
+- name: create
+  command:
+    mdadm --create
+    {{ item.device }}
+    --level={{ item.level | default(1) }}
+    --raid-devices={{ item.devices | length }}
+    --metadata={{ item.metadata | default("1.2") }}
+    {{ item.devices | join(" ")  }}
+  with_items: "{{ mdraid_devices }}"
+  when:
+    mdraid_devices_state == "created"
