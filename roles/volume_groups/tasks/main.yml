@@ -1,0 +1,17 @@
+---
+
+- setup:
+    gather_subset: "!all"
+
+- name: debian apt install packages
+  apt:
+    pkg:
+      - lvm2
+  when: ansible_os_family == "Debian"
+
+- name: volume groups
+  lvg:
+    vg: "{{ item.name }}"
+    pvs: "{{ item.devices | join(',') }}"
+    state: "{{ volume_groups_state }}"
+  with_items: "{{ volume_groups }}"
