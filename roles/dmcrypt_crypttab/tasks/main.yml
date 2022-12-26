@@ -1,0 +1,6 @@
+---
+
+- name: crypttab
+  template:
+    src: crypttab.j2
+    dest: "{{ root_target_directory | default('') }}/etc/crypttab"

@@ -1,0 +1,6 @@
+{{ansible_managed|comment}}
+
+# <name>  <device>     <password>     <options>
+{% for cryptdev in dmcrypt_devices %}
+{{ cryptdev.name }} {{ cryptdev.device }} {{ cryptdev.password | default('none') }} {{ cryptdev.options | default('luks') }}
+{% endfor %}
