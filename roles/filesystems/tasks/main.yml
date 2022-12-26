@@ -1,0 +1,66 @@
+---
+
+- name: install debian packages
+  apt:
+    pkg:
+      - btrfs-progs
+      - dosfstools
+  when: ansible_os_family == "Debian"
+
+- name: unmount filesystems
+  mount:
+    name: "{{ root_target_directory | default('') }}/{{ item.mount_point }}"
+    state: unmounted
+  with_items: "{{ filesystems[::-1] }}"
+  when:
+    filesystems_state == "unmounted" or
+    filesystems_state == "formated"
+
+- name: filesystems
+  filesystem:
+    fstype: "{{ item.fstype }}"
+    dev: "{{ item.device }}"
+    opts: "{% if item.uuid is defined %}-U {{ item.uuid }}{% endif %}"
+    force: "{{ filesystems_state == 'formated' }}"
+  with_items: "{{ filesystems }}"
+  when:
+    - item.device is defined
+    - filesystems_state == "mounted" or
+      filesystems_state == "formated"
+    - not item.fstype == "vfat"
+    - not (item.keep is defined and item.keep)
+
+- name: format fat32
+  command: mkfs.fat -F32 {{ item.device }}
+  with_items: "{{ filesystems }}"
+  when:
+    - item.device is defined
+    - filesystems_state == "formated"
+    - item.fstype == "vfat"
+    - not (item.keep is defined and item.keep)
+
+- name: mount filesystems
+  mount:
+    name: "{{ root_target_directory  | default('') }}{{ root_target_directory is defined | ternary('/','') }}{{ item.mount_point }}"
+    src: "{{ (item.uuid is defined | ternary('UUID=','')) + item.uuid | default(item.device) }}"
+    fstype: "{{ item.fstype }}"
+    opts: '{{ item.mount_options | default("defaults") }}'
+    state: mounted
+  with_items: "{{ filesystems }}"
+  when:
+    filesystems_state == "mounted" or
+    filesystems_state == "formated"
+
+- name: fstab
+  mount:
+    name: "{{ item.mount_point }}"
+    src: "{{ (item.uuid is defined | ternary('UUID=','')) + item.uuid | default(item.device) }}"
+    fstype: "{{ item.fstype }}"
+    opts: "{{ item.opts | default('defaults') }}"
+    state: present
+    fstab: "{{ fstab_file }}"
+  with_items: "{{ filesystems }}"
+  when:
+    filesystems_state == "configured" or
+    filesystems_state == "mounted" or
+    filesystems_state == "formated"
