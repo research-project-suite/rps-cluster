@@ -1,0 +1,22 @@
+---
+
+- name: format
+  command: mkswap {% if item.uuid is defined %}-U {{ item.uuid }}{% endif %} {{ item.device }}
+  with_items: "{{ swap_devices }}"
+  when:
+    - swap_devices_state == "formated"
+    - item.format | default(true)
+
+- name: fstab for swap devices
+  mount:
+    name: none
+    src: "{% if item.uuid is defined %}UUID={{ item.uuid }}{% else %}{{ item.device }}{% endif %}"
+    fstype: swap
+    opts: sw
+    passno: '0'
+    dump: '0'
+    state: present
+    fstab: "{{ fstab_file }}"
+  with_items: "{{ swap_devices }}"
+  when:
+    swap_devices_state == "configured"
