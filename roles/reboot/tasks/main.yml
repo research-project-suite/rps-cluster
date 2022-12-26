@@ -1,0 +1,13 @@
+---
+
+- import_tasks: pre-reboot.yaml
+  vars:
+    ansible_host: "{{ssh_host_pre_reboot}}"
+    ssh_host: "{{ ssh_host_pre_reboot }}"
+
+- import_tasks: wait-and-pause.yaml
+
+- import_tasks: post-reboot.yaml
+  vars:
+    ansible_host: "{{ssh_host_post_reboot}}"
+    ssh_host: "{{ ssh_host_post_reboot }}"

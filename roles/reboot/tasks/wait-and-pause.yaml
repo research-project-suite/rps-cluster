@@ -1,0 +1,30 @@
+---
+
+- name: wait for ssh port to be closed
+  local_action: wait_for
+  args:
+    host: "{{ ssh_host_pre_reboot }}"
+    port: 22
+    search_regex: OpenSSH
+    timeout: "{{ reboot_wait_for_ssh_close_timeout_seconds }}"
+    state: absent
+  register: _reboot_wait_for_ssh_port_closed
+
+- name: remember the shutdown time
+  set_fact:
+    _reboot_shutdown_timestamp: "{{ _current_timestamp }}"
+
+- name: pause to let host reboot
+  pause:
+    seconds: "{{ reboot_pause_seconds }}"
+  register: _reboot_pause
+
+- name: wait for ssh port to be open again
+  local_action: wait_for
+  args:
+    host: "{{ ssh_host_post_reboot }}"
+    port: 22
+    search_regex: OpenSSH
+    timeout: "{{ reboot_wait_for_ssh_open_timeout_seconds }}"
+    state: present
+  register: _reboot_wait_for_ssh_port_open
