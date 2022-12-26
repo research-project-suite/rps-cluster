@@ -1,0 +1,36 @@
+---
+
+- import_tasks: regenerate.yml
+  when: ssh_host_key_state == 'regenerated'
+
+- import_tasks: scan.yml
+  when: ssh_host_key_state == 'scanned'
+
+- import_tasks: setup.yml
+  when:
+    - ssh_host_key_state == 'configured'
+    - ansible_ssh_host_key_ed25519_public is defined
+
+- import_tasks: fetch.yml
+  when:
+    - ssh_host_key_state == 'configured' or
+      ssh_host_key_state == 'fetched' or
+      ssh_host_key_state == 'regenerated'
+    - ssh_host_key_state == 'configured'
+      and not ansible_ssh_host_key_ed25519_public is defined
+      or not ssh_host_key_state == 'configured'
+
+- import_tasks: save.yml
+  when:
+    ssh_host_key_state == 'configured' or
+    ssh_host_key_state == 'scanned' or
+    ssh_host_key_state == 'regenerated' or
+    ssh_host_key_state == 'fetched'
+
+- import_tasks: local.yml
+  when:
+    - ssh_host_key_state == 'configured' or
+      ssh_host_key_state == 'scanned' or
+      ssh_host_key_state == 'regenerated' or
+      ssh_host_key_state == 'saved'
+    - ssh_update_local_known_hosts_file

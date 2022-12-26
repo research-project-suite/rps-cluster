@@ -1,0 +1,14 @@
+---
+
+- name: make sure host_vars directory is present for host
+  local_action: file
+  args:
+    path: "{{inventory_dir}}/host_vars/{{inventory_hostname}}"
+    state: directory
+
+- name: record ssh host key in host_vars
+  local_action: copy
+  args:
+    content:
+      ssh_host_key_ed25519_public: "{{ ssh_host_key_ed25519_public }}"
+    dest: "{{inventory_dir}}/host_vars/{{inventory_hostname}}/ssh_host_key.auto.json"

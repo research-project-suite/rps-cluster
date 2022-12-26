@@ -1,0 +1,10 @@
+ssh_host_key_state: configured
+
+ssh_host: "{{ ansible_host | default(inventory_hostname) }}"
+
+ssh_host_key_types:
+  - ed25519
+  - ecdsa
+  - rsa
+
+ssh_update_local_known_hosts_file: true

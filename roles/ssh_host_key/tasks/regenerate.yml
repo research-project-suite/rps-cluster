@@ -1,0 +1,28 @@
+---
+
+- name: ssh config directory
+  file:
+    path: "{{ root_target_directory | default('') }}/etc/ssh"
+    state: directory
+
+- name: delete old ssh host private keys
+  #file:
+  #  path: "{{ item }}"
+  #  state: absent
+  #with_fileglob:
+  #  - "{{ root_target_directory | default('') }}/etc/ssh/ssh_host_*"
+  shell: rm {{ root_target_directory | default('') }}/etc/ssh/ssh_host_*
+  args:
+    warn: false
+  register: _ssh_delete_host_keys_command
+  failed_when: _ssh_delete_host_keys_command.rc > 1
+  changed_when: _ssh_delete_host_keys_command.rc == 0
+
+- name: generate new ssh host keys
+  command: ssh-keygen -f {{ root_target_directory | default('') }}/etc/ssh/ssh_host_{{item}}_key -N "" -t {{item}}
+  with_items: "{{ssh_host_key_types}}"
+
+- service:
+    name: sshd
+    state: reloaded
+  when: not root_target_directory is defined

@@ -1,0 +1,10 @@
+---
+
+- name: write local ssh_known_hosts file
+  local_action: known_hosts
+  args:
+    path: "{{ lookup('env','HOME') }}/.ssh/known_hosts"
+    name: "{{ inventory_hostname }}"
+    key: "{{ inventory_hostname }},{{ ssh_host }} ssh-ed25519 {{ ssh_host_key_ed25519_public }}"
+  when: ssh_host_key_ed25519_public is defined
+  throttle: 1
