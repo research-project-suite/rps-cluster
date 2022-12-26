@@ -1,0 +1,29 @@
+---
+
+- name: assert that the distribution is Debian bookworm
+  assert:
+    that:
+    - ansible_facts.distribution == "Debian"
+    - ansible_facts.distribution_release == "bookworm"
+
+- name: debian packages
+  apt:
+    install_recommends: no
+    pkg:
+    - lxd
+    - apparmor
+    - dnsmasq-base
+    - python3-yaml
+    - criu
+
+- name: ansible facts directory
+  file:
+    path: /etc/ansible/facts.d
+    state: directory
+
+- name: lxd info fact
+  copy:
+    src: lxd_info.fact
+    dest: /etc/ansible/facts.d/
+    mode: u=rwx,g=rx,o=rx
+

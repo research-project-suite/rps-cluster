@@ -1,0 +1,2 @@
+#!/bin/sh
+lxc info | python3 -c "import yaml; import sys; import json; print(json.dumps(yaml.safe_load(sys.stdin)));"

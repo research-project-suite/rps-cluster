@@ -1,0 +1,13 @@
+---
+
+lxd_server_name: "{{inventory_hostname}}"
+lxd_cluster_server_name: "{{inventory_hostname_short}}"
+
+lxd_core_https_address: "{{lxd_server_name}}:8443"
+lxd_cluster_server_address: "{{lxd_server_name}}:8443"
+
+lxd_cluster_bootstrap: false
+
+lxd_ipv6_nat: true
+lxd_ipv4_nat: true
+lxd_default_storage_pool_driver: dir
