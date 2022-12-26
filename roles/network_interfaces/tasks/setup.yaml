@@ -1,0 +1,11 @@
+---
+
+- name: install resolvconf
+  apt:
+    name: resolvconf
+
+# remove rdnssd, which generates problems, see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=740998
+- name: uninstall rdnssd
+  apt:
+    name: rdnssd
+    state: absent
