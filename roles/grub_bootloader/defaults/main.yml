@@ -1,0 +1,6 @@
+cmdline: ""
+grub_cmdline_linux: "{{ cmdline }}"
+grub_cmdline_linux_default: quiet {{ cmdline }}
+grub_disable_recovery: false
+grub_terminal: console
+boot_devices: "{{ hard_disks | map(attribute='device') | list }}"
