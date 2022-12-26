@@ -1,0 +1,54 @@
+---
+
+- name: debian apt install packages
+  apt:
+    pkg:
+      - cryptsetup
+  when: ansible_os_family == "Debian"
+
+- name: close
+  command:
+    cryptsetup close
+    {{ item.name }}
+  with_items: "{{ dmcrypt_devices }}"
+  when:
+    dmcrypt_devices_state == "closed"
+
+- name: shred device
+  command: shred --iterations={{ dmcrypt_devices_shred_iterations }} {{ item.device }}
+  with_items: "{{ dmcrypt_devices }}"
+  when:
+    dmcrypt_devices_state == "wiped" or
+    dmcrypt_devices_state == "erased"
+
+- name: luksFormat
+  command:
+    cryptsetup luksFormat
+    --key-file=- --batch-mode
+    --cipher {{ item.cipher }}
+    --hash {{ item.hash }}
+    --key-size {{ item.key_size }}
+    {{ item.device }}
+    /ram/dmcrypt_devices/{{ item.name }}
+  args:
+    stdin: "{{ item.key }}"
+  with_items: "{{ dmcrypt_devices }}"
+  when:
+    - dmcrypt_devices_state == "formated" or
+      dmcrypt_devices_state == "wiped"
+    - item.luks | default(true)
+
+- name: open
+  command:
+    cryptsetup open --type luks
+    --key-file=- --batch-mode
+    {{ item.discard | default(false) | ternary('--allow-discards','') }}
+    {{ item.device }}
+    {{ item.name }}
+  args:
+    stdin: "{{ item.key }}"
+  with_items: "{{ dmcrypt_devices }}"
+  when:
+    - dmcrypt_devices_state == "formated" or
+      dmcrypt_devices_state == "opened"
+    - item.luks | default(true)
