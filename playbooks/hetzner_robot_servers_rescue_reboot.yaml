@@ -1,6 +1,6 @@
 ---
 - name: Hetzner robot servers rescue playbook
-  hosts: hetzner_robot_servers
+  hosts: all
   remote_user: root
   gather_facts: false
   pre_tasks:
@@ -45,25 +45,20 @@
           os: linux
           authorized_keys: "{{ hrobot_ssh_key_info | json_query('ssh_keys[*].fingerprint') }}"
 
-    - name: Send ACPI signal to server to request controlled shutdown
-      delegate_to: localhost
-      community.hrobot.reset:
-        server_number: "{{ hetzner_server_number }}"
-        hetzner_user: "{{ hetzner_robot_api_username }}"
-        hetzner_password: "{{ hetzner_robot_api_password }}"
-        reset_type: hardware
-
-    - name: Remove rescue system ssh known host key
-      delegate_to: localhost
-      ansible.builtin.known_hosts:
-        name: "{{ ssh_host }}"
-        state: absent
-
   roles:
     - role: reboot
-      reboot_command: false
       ssh_host_key_state: scanned
 
   post_tasks:
     - name: Gather host facts after reboot
       ansible.builtin.setup:
+
+    - name: Add host to the local SSH configuration
+      delegate_to: localhost
+      community.general.ssh_config:
+        ssh_config_file: ~/.ssh/config
+        host: "{{ inventory_hostname }}"
+        hostname: "{{ ssh_host }}"
+        state: present
+        remote_user: root
+      throttle: 1

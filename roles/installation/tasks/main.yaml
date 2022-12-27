@@ -43,6 +43,11 @@
   vars:
     debootstrap_include: "{{ debian_boot_packages }}"
 
+- name: set hostname
+  copy:
+    content: "{{ inventory_hostname }}\n"
+    dest: "{{ root_target_directory }}/etc/hostname"
+
 - import_role:
     name: dmcrypt_crypttab
   when: dmcrypt_devices is defined

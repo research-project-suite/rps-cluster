@@ -1,6 +1,6 @@
 ---
 
-- include: setup_Debian.yml
+- import_tasks: setup_Debian.yml
 
 #- name: mdadm detail scan
 #  command: mdadm --detail --scan {{ item.device }}

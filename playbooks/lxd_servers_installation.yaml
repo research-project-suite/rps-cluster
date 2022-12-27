@@ -1,8 +1,0 @@
----
-- name: Install LXD servers
-  hosts: lxd_servers
-  remote_user: root
-
-  roles:
-    - role: installation
-    - role: lxd_server
