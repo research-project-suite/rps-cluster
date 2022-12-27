@@ -1,0 +1,22 @@
+---
+
+- name: ssh key
+  user:
+    name: root
+    generate_ssh_key: yes
+    ssh_key_type: ed25519
+  when:
+    - root_ssh_key
+    - not root_target_directory is defined
+
+- name: ssh directory
+  file:
+    path: "{{ root_target_directory | default('') }}/root/.ssh"
+    state: directory
+  when: root_ssh_authorized_keys is defined
+
+- name: ssh authorized keys
+  template:
+    src: ssh_authorized_keys.j2
+    dest: "{{ root_target_directory | default('') }}/root/.ssh/authorized_keys"
+  when: root_ssh_authorized_keys is defined
