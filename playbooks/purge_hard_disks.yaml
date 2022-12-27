@@ -1,0 +1,20 @@
+---
+- name: Purge hard disks of servers
+  hosts: lxd_servers
+  remote_user: root
+  vars_prompt:
+    - name: REALLY_PURGE_HARDDISKS_WHICH_WILL_DESTROY_EVERYTHING_ON_YOUR_HARDDISKS_I_KNOW_WHAT_I_AM_DOING
+      prompt: |
+        You are about to PURGE your HARDDISKS which will DESTROY EVERYTHING on your HARDDISKS!!!
+        All your FILESYSTEMS, PARTITION TABLES, SOFTWARE RAID, LOGICAL VOLUME GROUPS are going to be erased!
+        All Data on you BLOCK DEVICES is going to get overwritten!
+
+        This will affect the targeted hosts:
+
+        {{ansible_play_hosts| join("
+        ")}}
+
+        Do you REALLY want to PURGE your HARDDISKS which will DESTROY EVERYTHING on your HARDDISKS? Do you know what you are doing?
+      private: false
+  roles:
+    - role: purge_hard_disks

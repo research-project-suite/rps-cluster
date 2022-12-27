@@ -3,15 +3,15 @@
 - name: host_vars directory
   local_action: file
   args:
-    path: "{{ playbook_dir }}/host_vars/{{inventory_hostname}}"
+    path: "{{ inventory_dir }}/host_vars/{{inventory_hostname}}"
     state: directory
 
 - name: host_vars file
   local_action: template
   args:
     src: host_vars.yaml.j2
-    dest: "{{ playbook_dir }}/host_vars/{{inventory_hostname}}/{{_host_vars_filename}}.yaml"
+    dest: "{{ inventory_dir }}/host_vars/{{inventory_hostname}}/{{_host_vars_filename}}.yaml"
 
 - name: include host_vars
   include_vars:
-    dir: "{{ playbook_dir }}/host_vars/{{inventory_hostname}}/"
+    dir: "{{ inventory_dir }}/host_vars/{{inventory_hostname}}/"

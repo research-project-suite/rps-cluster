@@ -16,9 +16,9 @@ filesystems:
   - device: "{{ boot_device }}"
     mount_point: /boot
     fstype: ext4
-  - device: "{{ rescue_device }}"
-    mount_point: /rescue
-    fstype: btrfs
+  # - device: "{{ rescue_device }}"
+  #   mount_point: /rescue
+  #   fstype: btrfs
   - device: /dev/{{primary_volume_group_name}}/root
     mount_point: /
     fstype: btrfs
