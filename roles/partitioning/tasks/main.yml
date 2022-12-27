@@ -1,0 +1,38 @@
+---
+
+- include: setup_Debian.yml
+  when: ansible_os_family == "Debian"
+
+- name: write partition table
+  command:
+    parted --script
+    {{ item.device }}
+    -- unit kiB
+    mklabel {{ item.label_type }}
+  with_items: "{{ hard_disks }}"
+
+- name: create partitions
+  command:
+    parted --script
+    {{ item.0.device }}
+    -- unit kiB
+    {{ lookup('template','parted_partitions_args.j2') }}
+  with_subelements:
+    - "{{ hard_disks }}"
+    - partitions
+
+- name: set flags
+  command:
+    parted --script
+    {{ item.device }}
+    -- unit kiB
+    {{ lookup('template','parted_flags_args.j2') }}
+  with_items: "{{ hard_disks }}"
+  when: ( item.partitions | json_query("[].flags") | length ) > 0
+
+- name: sync
+  command: sync
+
+- name: reread partition tables
+  command: partprobe {{ item.device }}
+  with_items: "{{ hard_disks }}"

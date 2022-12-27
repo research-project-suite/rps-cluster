@@ -1,0 +1,6 @@
+---
+
+- name: apt packages installed
+  apt:
+    pkg:
+      - parted

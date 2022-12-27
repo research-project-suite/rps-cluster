@@ -1,0 +1,8 @@
+{% for part in item.partitions %}
+{% if part.flags is defined %}
+{% set partnum = loop.index %}
+{% for flag in part.flags %}
+set {{ partnum }} {{ flag }} on
+{% endfor %}
+{% endif %}
+{% endfor %}
