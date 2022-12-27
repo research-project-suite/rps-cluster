@@ -5,6 +5,7 @@
   gather_facts: false
   vars:
     hetzner_server_info: "{{ (hetzner_robot_server_info_task.servers|first) }}"
+    hetzner_main_ip_info: "{{ hetzner_robot_main_ip_info_task.json.ip }}"
   tasks:
     - name: Get hetzner server infos
       delegate_to: localhost
@@ -15,8 +16,13 @@
         full_info: true
       register: hetzner_robot_server_info_task
 
-    # - debug:
-    #     msg: "{{ hetzner_server_info }}"
+    - name: Get hetzner main ip infos
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: https://robot-ws.your-server.de/ip/{{ hetzner_server_info.server_ip }}
+        user: "{{ hetzner_robot_api_username }}"
+        password: "{{ hetzner_robot_api_password }}"
+      register: hetzner_robot_main_ip_info_task
 
     - name: Assert that hetzner server matches ansible
       ansible.builtin.assert:
@@ -41,3 +47,4 @@
           hetzner_rescue_system_ipv6: "{{ hetzner_server_info.server_ipv6_net | ansible.utils.ipmath(2) }}"
           ansible_host: "{{ hetzner_server_info.server_ip }}"
           ssh_host: "{{ hetzner_server_info.server_ip }}"
+          hetzner_gateway_ip: "{{ hetzner_main_ip_info.gateway }}"

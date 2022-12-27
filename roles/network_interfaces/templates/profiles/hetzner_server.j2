@@ -5,19 +5,19 @@
 auto lo
 iface lo inet loopback
 
-auto eth0
-iface eth0 inet static
-  address {{hetzner_server_main_ip}}
+auto eno1
+iface eno1 inet static
+  address {{hetzner_server_ip}}
   netmask 32
-  gateway {{hetzner_server_gateway}}
-  pointopoint {{hetzner_server_gateway}}
+  gateway {{hetzner_gateway_ip}}
+  pointopoint {{hetzner_gateway_ip}}
   dns-nameservers 213.133.98.98 213.133.99.99 213.133.100.100
 
-iface eth0 inet6 static
+iface eno1 inet6 static
   address {{ hetzner_ipv6_subnet | ansible.utils.ipmath(1) | ipv6('address') }}
   netmask 128
 
-iface eth0 inet6 static
+iface eno1 inet6 static
   address {{ hetzner_ipv6_subnet | ansible.utils.ipmath(2) | ipv6('address') }}
   netmask 128
   gateway fe80::1
