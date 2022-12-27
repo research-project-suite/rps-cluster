@@ -57,8 +57,8 @@
   vars:
     swap_devices_state: configured
 
-- import_role:
-    name: keyboard_configuration
+# - import_role:
+#     name: keyboard_configuration
 
 - import_role:
     name: grub_bootloader

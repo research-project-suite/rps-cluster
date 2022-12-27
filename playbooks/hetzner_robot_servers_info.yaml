@@ -1,0 +1,43 @@
+---
+- name: Hetzner robot servers info playbook
+  hosts: hetzner_robot_servers
+  remote_user: root
+  gather_facts: false
+  vars:
+    hetzner_server_info: "{{ (hetzner_robot_server_info_task.servers|first) }}"
+  tasks:
+    - name: Get hetzner server infos
+      delegate_to: localhost
+      community.hrobot.server_info:
+        server_number: "{{ hetzner_server_number }}"
+        hetzner_user: "{{ hetzner_robot_api_username }}"
+        hetzner_password: "{{ hetzner_robot_api_password }}"
+        full_info: true
+      register: hetzner_robot_server_info_task
+
+    # - debug:
+    #     msg: "{{ hetzner_server_info }}"
+
+    - name: Assert that hetzner server matches ansible
+      ansible.builtin.assert:
+        that:
+          - hetzner_server_info.server_name == inventory_hostname
+          - hetzner_server_info.server_number == hetzner_server_number
+
+    - name: Set hetzner server host vars
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "---\n{{ 'ansible managed by hetzner_robot_servers_info playbook' | comment }}\n\n{{ hetzner_server_host_vars | to_yaml }}"
+        dest: "{{ inventory_dir }}/host_vars/{{ inventory_hostname }}/hetzner.yaml"
+        mode: 0644
+      vars:
+        hetzner_server_host_vars:
+          hetzner_server_info: "{{ hetzner_server_info }}"
+          hetzner_server_number: "{{ hetzner_server_number }}"
+          hetzner_server_ip: "{{ hetzner_server_info.server_ip }}"
+          hetzner_product: "{{ hetzner_server_info.product }}"
+          hetzner_dc: "{{ hetzner_server_info.dc }}"
+          hetzner_ipv6_subnet: "{{ hetzner_server_info.server_ipv6_net }}/64"
+          hetzner_rescue_system_ipv6: "{{ hetzner_server_info.server_ipv6_net | ansible.utils.ipmath(2) }}"
+          ansible_host: "{{ hetzner_server_info.server_ip }}"
+          ssh_host: "{{ hetzner_server_info.server_ip }}"

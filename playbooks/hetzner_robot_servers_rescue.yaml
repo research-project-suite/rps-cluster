@@ -1,0 +1,69 @@
+---
+- name: Hetzner robot servers rescue playbook
+  hosts: hetzner_robot_servers
+  remote_user: root
+  gather_facts: false
+  pre_tasks:
+    - name: Get hetzner server infos
+      delegate_to: localhost
+      community.hrobot.server_info:
+        server_number: "{{ hetzner_server_number }}"
+        hetzner_user: "{{ hetzner_robot_api_username }}"
+        hetzner_password: "{{ hetzner_robot_api_password }}"
+        full_info: true
+      register: hetzner_robot_server_info_task
+
+    - name: Assert that hetzner server matches ansible
+      ansible.builtin.assert:
+        that:
+          - hetzner_server_info.server_name == inventory_hostname
+          - hetzner_server_info.server_number == hetzner_server_number
+
+    - name: Add an SSH key
+      delegate_to: localhost
+      community.hrobot.ssh_key:
+        hetzner_user: "{{ hetzner_robot_api_username }}"
+        hetzner_password: "{{ hetzner_robot_api_password }}"
+        state: present
+        name: rescue
+        public_key: "{{ lookup('file', '~/.ssh/id_ed25519.pub') }}"
+
+    - name: List all SSH keys
+      delegate_to: localhost
+      community.hrobot.ssh_key_info:
+        hetzner_user: "{{ hetzner_robot_api_username }}"
+        hetzner_password: "{{ hetzner_robot_api_password }}"
+      register: hrobot_ssh_key_info
+
+    - name: Enable a rescue system (64bit Linux) for the next boot
+      delegate_to: localhost
+      community.hrobot.boot:
+        server_number: "{{ hetzner_server_number }}"
+        hetzner_user: "{{ hetzner_robot_api_username }}"
+        hetzner_password: "{{ hetzner_robot_api_password }}"
+        rescue:
+          os: linux
+          authorized_keys: "{{ hrobot_ssh_key_info | json_query('ssh_keys[*].fingerprint') }}"
+
+    - name: Send ACPI signal to server to request controlled shutdown
+      delegate_to: localhost
+      community.hrobot.reset:
+        server_number: "{{ hetzner_server_number }}"
+        hetzner_user: "{{ hetzner_robot_api_username }}"
+        hetzner_password: "{{ hetzner_robot_api_password }}"
+        reset_type: hardware
+
+    - name: Remove rescue system ssh known host key
+      delegate_to: localhost
+      ansible.builtin.known_hosts:
+        name: "{{ ssh_host }}"
+        state: absent
+
+  roles:
+    - role: reboot
+      reboot_command: false
+      ssh_host_key_state: scanned
+
+  post_tasks:
+    - name: Gather host facts after reboot
+      ansible.builtin.setup:

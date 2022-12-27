@@ -1,6 +1,7 @@
 ---
+- name: Configure LXD servers
+  hosts: lxd_servers
+  remote_user: root
 
-- hosts: lxd_servers
-  become: true
   roles:
-  - name: lxd_server
+    - role: lxd_server

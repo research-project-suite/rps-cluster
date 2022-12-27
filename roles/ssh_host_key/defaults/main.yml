@@ -1,6 +1,6 @@
 ssh_host_key_state: configured
 
-ssh_host: "{{ ansible_host | default(inventory_hostname) }}"
+ssh_host: "{{ inventory_hostname }}"
 
 ssh_host_key_types:
   - ed25519

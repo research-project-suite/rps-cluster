@@ -3,7 +3,7 @@
 - name: wait for ssh port to be closed
   local_action: wait_for
   args:
-    host: "{{ ssh_host_pre_reboot }}"
+    host: "{{ ssh_host }}"
     port: 22
     search_regex: OpenSSH
     timeout: "{{ reboot_wait_for_ssh_close_timeout_seconds }}"
@@ -22,7 +22,7 @@
 - name: wait for ssh port to be open again
   local_action: wait_for
   args:
-    host: "{{ ssh_host_post_reboot }}"
+    host: "{{ ssh_host }}"
     port: 22
     search_regex: OpenSSH
     timeout: "{{ reboot_wait_for_ssh_open_timeout_seconds }}"
