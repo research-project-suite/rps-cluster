@@ -1,0 +1,35 @@
+label_type: gpt
+
+partitions_first_device:
+  - name: "{{_efi_partlabel}}"
+    part_type: ESP
+    start: 4MiB
+    end: 512MiB
+    flags:
+      - boot
+
+partitions:
+  - prefix: "{{inventory_hostname_short}}-"
+    suffix: -boot
+    start: 512MiB
+    end: 1GiB
+    typecode: 8300
+    usage: boot
+  - prefix: "{{inventory_hostname_short}}-"
+    suffix: -rescue
+    start: 1GiB
+    end: 2GiB
+    typecode: 8300
+    usage: rescue
+  - prefix: "{{inventory_hostname_short}}-"
+    suffix: -data
+    start: 2GiB
+    end: "{{last_partition_end}}"
+    typecode: 8300
+    usage: data
+
+debian_boot_packages:
+  - efibootmgr
+  - grub-efi-amd64
+
+grub_bootloader_target: x86_64-efi

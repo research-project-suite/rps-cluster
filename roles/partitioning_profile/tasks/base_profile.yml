@@ -1,0 +1,24 @@
+---
+
+- name: load base profile vars
+  include_vars:
+    file: "base_profiles/{{partitioning_base_profile}}.yml"
+    name: _partitioning_base_profile
+
+- name: set base profile vars
+  set_fact:
+    debian_boot_packages: "{{ _partitioning_base_profile.debian_boot_packages }}"
+    grub_bootloader_target: "{{ _partitioning_base_profile.grub_bootloader_target }}"
+
+- name: set hard disks base profile
+  set_fact:
+    hard_disks: "{{lookup('template','hard_disks_base_profile.json.j2')}}"
+
+- name: set hard disks
+  set_fact:
+    hard_disks: "{{lookup('template','hard_disks_set.json.j2')}}"
+
+# - name: debug hard hard_disks
+#   debug:
+#     msg:
+#       hard_disks: "{{hard_disks}}"

@@ -1,0 +1,31 @@
+label_type: gpt
+
+partitions:
+  - name: bios_boot
+    start: 2MiB
+    end: 4MiB
+    flags:
+      - bios_grub
+  - prefix: "{{inventory_hostname_short}}-"
+    suffix: -boot
+    start: 512MiB
+    end: 1GiB
+    typecode: 8300
+    usage: boot
+  - prefix: "{{inventory_hostname_short}}-"
+    suffix: -rescue
+    start: 1GiB
+    end: 2GiB
+    typecode: 8300
+    usage: rescue
+  - prefix: "{{inventory_hostname_short}}-"
+    suffix: -data
+    start: 2GiB
+    end: "{{last_partition_end}}"
+    typecode: 8300
+    usage: data
+
+debian_boot_packages:
+  - grub-pc
+
+grub_bootloader_target: i386-pc

@@ -1,0 +1,11 @@
+---
+
+- name: generate swap device uuids
+  local_action: command uuid -v4
+  with_items: "{{filesystems}}"
+  register: _swap_devices_uuids
+  changed_when: false
+
+- name: set filesystems
+  set_fact:
+    swap_devices: "{{lookup('template','swap_devices.json.j2')}}"

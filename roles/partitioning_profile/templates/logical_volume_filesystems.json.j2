@@ -1,0 +1,13 @@
+[
+{% for fs in filesystems %}
+{{fs|to_json}},
+{% endfor %}
+{% for vol in partitioning_profile_volumes %}
+{% set fs = vol.fs %}
+{% set fs = fs | combine({
+  'label': vol.name,
+  'device': "/dev/"+primary_volume_group_name+"/"+vol.name
+}) %}
+{{fs|to_json}},
+{% endfor %}
+]

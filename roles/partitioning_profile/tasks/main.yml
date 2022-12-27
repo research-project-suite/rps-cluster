@@ -1,0 +1,21 @@
+---
+
+- import_tasks: scan.yml
+
+- import_tasks: base_profile.yml
+
+- import_tasks: raid_profile.yml
+
+- import_tasks: crypt_profile.yml
+
+- import_tasks: profile.yml
+
+- import_tasks: efi_filesystem.yml
+
+- import_tasks: volumes.yml
+
+- import_tasks: filesystems.yml
+
+- import_tasks: swap_devices.yml
+
+- import_tasks: host_vars.yml

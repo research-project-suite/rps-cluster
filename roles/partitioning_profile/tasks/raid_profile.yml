@@ -1,0 +1,14 @@
+---
+
+- name: load raid profile vars
+  include_vars:
+    file: "raid_profiles/{{partitioning_raid_profile}}.yml"
+    name: _partitioning_raid_profile
+
+- name: set raid profile vars
+  set_fact:
+    mdraid_devices: "{{_partitioning_raid_profile.mdraid_devices}}"
+    boot_device: "{{_partitioning_raid_profile.boot_device}}"
+    rescue_device: "{{_partitioning_raid_profile.rescue_device}}"
+    data_device: "{{_partitioning_raid_profile.data_device}}"
+    debian_boot_packages: "{{ debian_boot_packages | union(_partitioning_raid_profile.debian_boot_packages) }}"

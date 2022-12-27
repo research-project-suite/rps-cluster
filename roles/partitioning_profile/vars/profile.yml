@@ -1,0 +1,40 @@
+
+volume_groups:
+  - name: "{{primary_volume_group_name}}"
+    devices:
+      - "{{ data_device }}"
+
+logical_volumes:
+  - name: root
+    size: "{{root_partition_default_size}}"
+    volume_group: "{{primary_volume_group_name}}"
+  - name: swap
+    size: "{{swap_partition_default_size}}"
+    volume_group: "{{primary_volume_group_name}}"
+
+filesystems:
+  - device: "{{ boot_device }}"
+    mount_point: /boot
+    fstype: ext4
+  - device: "{{ rescue_device }}"
+    mount_point: /rescue
+    fstype: btrfs
+  - device: /dev/{{primary_volume_group_name}}/root
+    mount_point: /
+    fstype: btrfs
+
+swap_devices:
+  - device: /dev/{{primary_volume_group_name}}/swap
+
+grub_cmdline_linux: root=/dev/{{primary_volume_group_name}}/root
+
+debian_boot_packages:
+  - linux-image-amd64
+  - busybox-static
+  - lvm2
+  - e2fsprogs
+  - btrfs-progs
+  - openssh-server
+  - python
+  - console-setup
+  - acpi-support

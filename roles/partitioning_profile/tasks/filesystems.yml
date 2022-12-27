@@ -1,0 +1,16 @@
+---
+
+- name: generate filesystem uuids
+  local_action: command uuid -v4
+  with_items: "{{filesystems}}"
+  register: _filesystems_uuids
+  changed_when: false
+
+- name: set filesystems
+  set_fact:
+    filesystems: "{{lookup('template','filesystems.json.j2')}}"
+
+# - debug:
+#     msg:
+#       _filesystems_uuids: "{{_filesystems_uuids}}"
+#       filesystems: "{{filesystems}}"

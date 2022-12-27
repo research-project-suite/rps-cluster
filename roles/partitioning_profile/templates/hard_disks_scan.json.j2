@@ -1,0 +1,8 @@
+[
+{% for device in ansible_devices.keys() %}
+{
+  "name": "{{device}}",
+  "device": "/dev/{{device}}",
+},
+{% endfor %}
+]
