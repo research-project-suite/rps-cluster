@@ -8,6 +8,33 @@ lxd_cluster_server_address: "{{lxd_server_name}}:8443"
 
 lxd_cluster_bootstrap: false
 
-lxd_ipv6_nat: true
-lxd_ipv4_nat: true
-lxd_default_storage_pool_driver: dir
+lxd_storage_pools_config:
+- name: default
+  description: default storage pool
+  driver: dir
+
+lxd_networks_config:
+- name: lxdbr0
+  description: default lxd bridge
+  type: bridge
+  config:
+    ipv4.address: auto
+    ipv4.nat: true
+    ipv6.address: auto
+    ipv6.nat: true
+
+lxd_profiles_config:
+- name: default
+  description: default profile
+  config:
+    limits.cpu: 1
+    limits.memory: 1GB
+  devices:
+    eth0:
+      name: eth0
+      network: lxdbr0
+      type: nic
+    root:
+      path: /
+      pool: default
+      type: disk
