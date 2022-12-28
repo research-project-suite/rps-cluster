@@ -10,7 +10,7 @@ It only runs if you set `REALLY_PURGE_HARDDISKS_WHICH_WILL_DESTROY_EVERYTHING_ON
       prompt: |
         You are about to PURGE your HARDDISKS which will DESTROY EVERYTHING on your HARDDISKS!!!
         All your FILESYSTEMS, PARTITION TABLES, SOFTWARE RAID, LOGICAL VOLUME GROUPS are going to be erased!
-        All Data on you BLOCK DEVICES is going to get overwritten!
+        All Data on you BLOCK DEVICES is going to get overwritten! 
 
         This will affect the targeted hosts:
 
